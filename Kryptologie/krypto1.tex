@@ -1,0 +1,221 @@
+\section{Grundbegriffe und einfache Verfahren}
+
+\textbf{Klartext}: Unverschlüsselter Text (plain text)
+
+\textbf{Chiffre}: Verschlüsselter Text (cipher text)
+
+\textbf{Sender Alice}: Schlüssel $\rightarrow$ Verschlüsselung
+
+\textbf{Empfänger Bob}: Schlüssel $\rightarrow$ Entschlüsselung
+
+\par \medskip
+
+Encryption über Alphabet R, decryption über Alphabet S.
+
+Verschlüsselung erfordert:
+
+\begin{itemize}
+  \item Verschlüsselungsverfahren (Funktion E)
+  \item Schlüssel $k_e$ (encryption key) aus Menge $K$ von möglichen Schlüsseln
+\end{itemize}
+
+E(m, $k_e$) = c, mit m Klartext, $k_e$ Schlüssel und c Chiffre-text.
+
+Entschlüsselung erfordert
+
+\begin{itemize}
+  \item Entschlüsselungsfunktion (Funktion D)
+  \item Schlüssel $k_d$ (decryption key, hängt ab von $k_e$)
+\end{itemize}
+
+D(c, $k_d$) = m
+
+Für festes $k_e$ soll die Funktion E(., $k_e$) injektiv sein, d.h. 
+
+\begin{equation}
+m_1 \neq m_2 \rightarrow E(m_1,k_e) \neq E(m_2, k_e)
+\end{equation}
+
+D(., $k_d$) = E(., $k_e$)$^{-1}$
+
+\subsection{Definition}
+Ist $k_e = k_d$ (oder falls $k_d$ einfach aus $k_e$ zu berechnen ist), so spricht man von \underline{symmetrischen Verschlüsselungsverfahren}.
+
+\par \medskip
+
+Ist $k_d$ nicht oder nur mit großem Aufwand aus $k_e$ berechenbar, so spricht man von \underline{asymetrischen Verfahren}.
+
+\par\medskip
+
+Im zweiten Fall kann man $k_e$ auch veröffentlichen: Public-Key-Verfahren. Sicherheit eines Verschlüsselungsverfahrens darf nur von der Geheimhaltung von $k_d$ abhängen. Bei symmetrischen Verfahren muss $k_e = k_d$ auf sicherem Wege ausgetauscht werden.
+
+\par\medskip
+
+Asymmetrische Verfahren: 
+
+Bob erzeugt $k_e$, $k_d$.
+
+\subsection{Anzahl Schlüssel symetrisch vs. asymetrisch}
+Für symmetrische Verfahren gilt:
+
+\begin{equation}
+  {n \choose 2 } = \frac{n \cdot (n-2)}{2} = O(n²) 
+\end{equation}
+
+Für asymmetrische Verfahren gilt:
+
+\begin{equation}
+  2n = O(n)
+\end{equation}
+
+
+\section{Beispiel}
+
+\begin{enumerate}[label=(\alph*)]
+  \item R = S = $\{0,1,...,25\}$
+
+  Verfahren: Verschiebechiffre
+
+  Menge der Schlüssel: K = $\{0,1,...,25\}$
+
+  Elemente aus R werden einzeln verschlüsselt:
+
+  Wähle Schlüssel $i \in K$
+
+  \textbf{Verschlüsseln:}  $x \in R \mapsto x+i$ mod 26
+
+  \textbf{Entschlüsseln:} $y \mapsto y-i$ mod 26
+
+  $m = x_1 ... x_r$, $x_j \in R$
+
+  $E(m,i)$ = (($x_1 +i$) mod 26) (($x_2 +i$) mod 26) ... (($x_r + i$) mod 26) = c
+
+  $D(c,i)$ = ($y_1-i$) mod 26) ... (($y_2 -i$) mod 26) = m 
+
+  Verfahren unsicher, da K klein.
+
+  \item Verallgemeinerung: zeichenweise Substitutionschiffre
+
+  R = S = $\{0, ..., 25\}$
+
+  K = Menge aller Permutationen von R
+
+  Wähle Schlüssel $\pi \in K$, m = $x_1 ... x_r$, $x_j \in R$
+
+  \textbf{Verschlüsseln:} 
+
+  $E(m, \pi) = \pi(x_1) ... \pi(x_r) = c$
+
+  \textbf{Entschlüsseln:}
+
+  $D(c, \pi) = \pi^{-1}(y_1) ... \pi^{-1}(y_r) = m$
+
+  $|K| = 26! \approx 4 \cdot 10^{26}$
+
+  Angenommen $10^{12}$ Schlüssel pro Sekunde testbar.
+
+  Angenommen 50$\%$ Schlüssel werden getestet. 
+
+  Man benötigt dazu: $2 \cdot 10^{14}$ Sekunden $\approx$ 6.000.000 Jahre.
+\end{enumerate}
+
+\section{Übersprungen}
+\section{Übersprungen}
+
+\section{Prinzip von Kerkhoffs (1883)}
+
+Sicherheit eines Verschlüsselungsverfahrens darf nur von der Geheimhaltung des Schlüssels $k_d$ abhängen, nicht von der Geheimhaltung des Verschlüsselungsalgorithmus ($\Rightarrow$ sollte offen gelegt werden: Praxistest).
+
+\section{Kryptoanalyse}
+
+Qualitative Unterschiede: 
+
+\begin{itemize}
+  \item Schlüssel $k_d$ lässt sich ermitteln
+  \item Ermittlung einer zu D(., $k_d$) äquivalenten Funktion (evtl. nur für gewisse $k_e$)
+  \item Finden des Klartextes für einen speziellen Chiffretext
+\end{itemize}
+
+\subsection{Arten von Angriffen}
+
+\subsubsection{Ciphertext-only-Angriff}
+
+Lediglich der Chiffretext ist dem Angreifer bekannt.
+
+\subsubsection{Known-Plaintext-Angriff}
+
+Der Angreifer kennt bereits Plaintext - Chiffretext Kombinationen.
+
+\subsubsection{Chozen-Plaintext-Angriff}
+
+Der Angreifer kann sich mit einem selbstgewählten Plaintext Chiffretexte erzeugen.
+
+\subsubsection{Chozen-Ciphertext-Angriff}
+
+Der Angreifer kann sich gewünschte Chiffretexte entschlüsseln lassen.
+
+
+\chapter{One-Time-Pad und perfekte Sicherheit}
+
+\section{Lauftextverschlüsselung}
+
+Früher im militärischen Bereich \underline{Lauftextverschlüsselungen}.
+
+\textbf{Klartext}: Endliche Folge z.B. über $\{0, ..., 25\}$.
+
+Addiere (mod 26) anderen Text (z.B. ab gewisser Stelle im Buch).
+
+\par \medskip
+
+\textbf{\underline{Problem}}: Häufige Buchstaben treffen bei Addition häufig auf Buchstaben $\Rightarrow$ kryptoanalytische Möglichkeiten.
+
+\section{One-Time-Pad}
+
+Klartextalphabet R = $\mathbb{Z}_2 =  \{0, 1\}$. 
+
+\par \medskip
+
+\textbf{Verschlüsselung:} Addiere zu Klartext der Länge n eine binäre Zufallsfolge der Länge n (Addition mod 2 = XOR).
+
+\par \medskip
+
+\textbf{Ergenibs:} Chiffretext
+\par \medskip
+
+
+$\overbrace{m}^{Klartext}$ $\oplus$ $\overbrace{k}^{Zufallsfolge}$ = c
+
+\par \medskip
+
+\textbf{Entschlüsseln:} $c \oplus k = m \oplus k \oplus k = m$
+
+\subsubsection{One-Time-Pad}
+k darf nur einmal verwendet werden. 
+
+$m_1  \oplus k = c_1$, $m_2 \oplus k = c_2$
+
+$c_1 \oplus c_2 = m_1 \oplus k \oplus m_2 \oplus k = m_1 \oplus m_2$
+
+\section{Was ist Zufallsfolge der Länge n?}
+
+Frage ist sinnlos! Es kommt auf die Erzeugung an. Folge von Nullen und Einsen, die so erzeugt werden, dass jeses Bit unabhängig von den vorhergehenden mit Warscheinlichkeit $\frac{1}{2}$ erzeugt wird. 
+
+Jede Folge der Länge n hat die Wahrscheinlichkeit $\frac{1}{2^n}$. 
+
+\section{One-Time-Pad ist perfekt sicher}
+
+\textbf{Gegeben:} Chiffretext c.
+
+Dann gilt: $pr(m|c) = \overbrace{pr(m)}^{A-priori\ W-keit}$, für alle Klartexte m.
+
+\par \medskip
+
+$pr(m|c)$ = Wahrscheinlichkeit, dass m Klartext war, wenn ich c kenne.
+
+\par \medskip
+
+Substitutionschiffre ist nicht perfekt sicher:
+
+\textbf{Chiffretext:} OCKTT
+
+$\Rightarrow$ m = HAUCK kann nicht Klartext gewesen sein. $pr(m|c) = 0$

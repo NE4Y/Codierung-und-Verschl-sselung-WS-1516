@@ -1,0 +1,138 @@
+\section{Grundbegriffe und einfache Beispiele}
+
+  \subsection{Codierung (genauer Kanalcodierung)}
+
+  Sicherung von Daten gegen Störungen bei der Übertragung / Speicherung.
+
+  \par \medskip
+
+  Quelle (Nachricht über Alphabet R) $\longrightarrow$ Kanalcodierung (codiert Nachricht in Codewort oder Folge von Codewörtern über Alphabet S) $\longrightarrow$ Kanal (Störungen!) $\longrightarrow$ Decodierer (Rekonstruktion der Nachricht 1. Codewort zurückgewinnen 2. Nachricht zurückgewinnen) $\longrightarrow$ Empfänger
+
+  \par \medskip
+
+  \par \medskip
+
+  Ziel: 
+
+  \begin{enumerate}
+    \item Möglichst viele Fehler erkennen und möglichst korrigieren
+    \item Aufwand für Codierung und Decodierung soll gering sein
+  \end{enumerate}
+
+  Grundprinzip: Hinzufügen von \underline{Redundanz} in systematischer Weise.
+
+  \par \medskip
+
+  \underline{Fehlererkennung} reicht, wenn Nachricht nochmal gesendet werden kann.
+
+  \subsection{Beispiele}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item \underline{Parity-Check-Code}
+
+    R = $\{0,1\}$, $k \in \mathbb{N}$.
+
+    Nachricht wird in Blöcke der Länge k zerlegt. 
+
+    Codierung: Block der Länge k  $\rightarrow$ Block der Länge k+1
+
+    Anhängen eines Bits, so dass Anzahl der Einsen im Block der Länge k+1 gerade ist.
+
+    \par \medskip
+
+    \underline{k=2}
+
+    00 $\rightarrow$ 000
+
+    01 $\rightarrow$ 011
+
+    10 $\rightarrow$ 101
+
+    11 $\rightarrow$ 110
+
+    $\rightarrow$ 1 Fehler wird erkannt (kann nicht korrigiert werden), 2 Fehler werden nicht erkannt
+
+    \item \underline{Wiederholungscode}
+
+    Nachicht in Blöcke der Länge k zerlegen. Jeder Block wird m-mal wiederholt. (m-facher Wiederholungscode)
+
+    k=2, m=3
+
+    00 $\rightarrow$ 000000
+
+    01 $\rightarrow$ 010101
+    
+    10 $\rightarrow$ 101010
+
+    11 $\rightarrow$ 111111
+
+    \par \medskip
+
+    \par \medskip
+
+    Wenn genau \underline{ein} Fehler aufgetreten ist, kann er korrigiert werden.
+
+    Zum Beispiel:
+
+    001000 $\rightarrow$ 000000
+
+    Angenommen zwei Fehler sind aufgetreten. Es wird erkannt, dass Fehler aufgtreten ist.
+
+    \par \medskip
+
+    Angenommen gesendet wurde 000000. Mögliche 2 Fehler:
+
+    \begin{itemize}
+      \item 000011 $\rightarrow$ 000000 $\checkmark$
+      \item 000101 $\rightarrow$ 010101 falsch
+      \item 001001 $\rightarrow$ ?
+    \end{itemize}
+
+    \item Codiere Blöcke der Länge 2 über $\{0,1\}$ folgendermaßen:
+
+    00 $\rightarrow$ 00000
+
+    01 $\rightarrow$ 01101
+
+    10 $\rightarrow$ 10110
+
+    11 $\rightarrow$ 11011
+
+    \par \medskip
+
+    Je zwei Codewörter unterscheiden sich an mindestens 3 Stellen.
+
+    Wen genau ein Fehler aufgetreten ist und der Decodierer das ``nächstgelegene'' Codewort wöhlt, so Decoder korrekt.
+
+    Wenn 2 Fehler auftreten, wird erkannt, dass kein Codewort empfangen wird.
+
+    $\rightarrow$ 1 Fehler korrigiert, 2 Fehler erkannt
+  \end{enumerate}
+
+  \subsection{GTIN-Prüfzifferncode (GTIN-13)}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item GTIN: Global Trade Item Number (Artikelnr.)
+
+    13-stelliger Code: die ersten 12 Ziffern entsprechen Nachricht / Information, 13. Ziffer ist Prüfziffer
+
+    R = S = $\{0,...,9\}$
+
+    \par \medskip
+
+    $c_1 ... c_{13}$
+
+    \newpage
+
+    \underline{$c_1 ... c_{12}$}
+
+    Herstellungsland (i.d.R die ersten drei, D: 400-440)
+
+    Hersteller (i.d.R $c_4, ..., c_8$)
+
+    Produkt (i.d.R $c_9, ..., c_{12}$)
+
+    \par \medskip
+
+    $c_{13}$ so, dass $c_1 + 3_cs + c_3 + 3c_4 + ... + 3_c{12} + c_{13} \equiv 0$ $(mod 10)$
+  \end{enumerate}

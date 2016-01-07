@@ -1,0 +1,305 @@
+\chapter{Signaturen, Hashfunktionen, Authentifizerung}
+
+  \section{Digitale Signaturen}
+
+  Anforderung: Niemand außer A kann Dokument mit der Signatur von A versehen, selbst wenn er Signatur von A von anderen Dokumenten kennt.
+
+  \par \medskip
+
+  Also auch: A kann nicht abstreiten, Dokument signiert zu haben.
+
+  \par \medskip
+
+  \par \medskip
+
+  Signatur gewährleistet:
+
+  \begin{itemize}
+    \item \underline{Identitätseigenschaft} des Unterzeichners des Dokuments
+
+    \item \underline{Echtheitseigenschaft} des Dokuments
+  \end{itemize}
+
+  Außerdem: \underline{Verifikationseigenschaft}
+
+  \par \medskip
+
+  Jeder Empfänger einer von A signierten Nachricht muss Signatur verifizieren können.
+
+  \par \medskip
+
+  \par \medskip
+
+  Realisierung über RSA-Signatur.
+
+  \section{RSA-Signatur}
+
+  A will Dokument signieren. Sie besitzt öffentlichen RSA-Schlüssel (n,e), geheimen RSA-Schlüssel d.
+
+  \par \medskip
+
+  Signatur von Dokument m ($m < n$):
+
+  \begin{center}
+    s(m) := $m^d \mod n$
+  \end{center}
+
+  A sendet (m, $s_A(m)$) an B.
+
+  B verfiziert: $s_A(m)^e \mod n = m^{de} \mod n = m$, Signatur wird akzeptiert.
+
+  \par \medskip
+
+  Falls $s_A(m)^e \mod n \neq m$, Signatur wird nicht akzeptiert.
+
+  \par \medskip
+
+  \par \medskip
+
+  Funktioniert so gut, da bei RSA Verschlüsselung / Entschlüsselung vertauschbar sind.
+
+  \par \medskip
+
+  Signaturen sind auch mit ElGamal konstruierbar, komplizierter wegen Zufallswahl bei der Verschlüsselung.
+
+  \par \medskip
+
+  Problem: Signatur ist so lang wie Nachricht.
+
+  \par \medskip
+
+  Ausweg: Kryptografische Hashfunktionen.
+
+  \section{Definition Hashfunktion}
+
+  R endliches Alphabet. \underline{Hashfunktion} ist Abbildung $R^* \rightarrow R^k$ (k fest)
+
+  \section{RSA-Signatur mit Hashfunktion}
+
+  A will m signieren (jetzt nicht notwendig $m < n$). Hashfunktion H der Länge k (Hashwerte $< 2^k \le n$).
+
+  H öffentlich bekannt.
+
+  Sie sendet (m, $\underbrace{H(m)^d \mod n}_{s_A(m)}$)
+
+  \par \medskip
+
+  Verifikation: B bildet H(m) aus m mit H. $s_A(m)^e \mod n = H(m)$? 
+
+  $\rightarrow$ Ja $\checkmark$, Nein: nicht akzeptiert
+
+  \section{Anforderung an H}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Angreifer kennt $(m, H(m)^d \mod n)$.
+
+    Er kann H(m) bestimmen. Gelingt es ihm ein $m' \neq m$ zu finden mit $H(m') = H(m)$, so ist $(m', H(m)^d \mod n)$ gültige Signatur von $m'$ durch A.
+
+    \item Angreifer wählt zufällig $y$ und berechnet $y^e \mod n = z$. Gelingt es ihm ein $m$ zu finden mit $H(m) = z$, so ist $(m,y)$ eine gültige Signatur von m durch Alice.
+
+    Verifikation:
+
+    \begin{itemize}
+      \item $y^e \mod n = z$ $\checkmark$
+      \item $H(m) = z$ $\checkmark$
+    \end{itemize}
+  \end{enumerate}
+
+  \section{Definition: Kryptographische Hashfunktion}
+
+  Eine \underline{kryptographische Hashfunktion} ist Hashfunktion H, die folgende Bedingungen erfüllen muss:
+
+  \begin{enumerate}
+    \item[(1)] H ist \underline{Einwegfunktion} (um Angriffe vom Typ 6.5.b) zu unterbinden)
+    \item[(2)] H ist \underline{schwach kollisionsressistent}, d.h. zu gegebenem n ist es \underline{nicht effizient} möglich ein $m' \neq m$ zu finden mit $H(m') = H(m)$ (um Angriffe vom Typ 6.5.a) zu unterbinden) (second pre-image resistant)     
+  \end{enumerate}
+
+  Verschärftere Anforderung an H als (2):
+
+  \begin{enumerate}
+    \item[(2')] H ist \underline{stark kollisionsressistent}, d.h. es ist nicht effizient möglich zwei $m_1 \neq m_2$ zu finden mit $H(m_1) = H(m_2)$
+  \end{enumerate}
+
+  (Solche Kollisionen gibt es, sogar unendlich viele)
+
+  \par \medskip
+
+  [Kryptographische Hashfunktion = message digest = digital fingerprint]
+
+  \par \medskip
+
+  \par \medskip
+
+  \subsubsection*{Wie lang sollte H(m) sein?}
+
+  \begin{itemize}
+    \item Nicht zu lang (Sinn von Hashfunktion)
+    \item Nicht zu kurz (``Geburtstagsparadox'') $\rightarrow$ Geburtstagsattacke
+  \end{itemize}
+
+  (H(m) hat 128 Bit Länge. Angriff auf starke Kollisionsressistenz:
+
+  Wenn er $2^{128} +1$ H(m)'s erzeugt hat, hat er sicher Kollision)
+
+  \section{Satz (Geburtstagsparadox)}
+
+  Ein Merkmal komme in m verschiedenen Ausprägungen vor. Jedes Objekt (einer Grundgesamtheit) besitze genau eine dieser Merkmalesausprägungen (mit gleicher Wahrscheinlichkeit).
+
+  \par \medskip
+
+  Ist dann $l \ge \frac{1+ \sqrt{1+8 \cdot m \cdot ln(2)}}{2} (\approx 1.18 \sqrt{m})$, so ist die Wahrscheinlichkeit, dass unter l Objekten zwei die gleiche Merkmalsausprägung haben, $\ge \frac{1}{2}$.
+
+  (Geburtstagsparadoxon: m = 366, $l \ge 23 \rightarrow$ Wahrscheinlichkeit $\ge \frac{1}{2}$, dass 2 Personen am gleichen Tag Geburtstag haben)
+
+  \subsection{Beweis}
+
+  Gegeben l Objekte.
+
+  Alle Ereignisse: ($g_1, ..., g_l) \in \{1,2,...,m\}^l$)
+
+  Anzahl: $m^l$.
+
+  Alle $g_i$ paarweise verschieden : $\prod_{i=0}^{l-1} (m-i)$
+
+  \par \medskip
+
+  Wahrscheinlichkeit, dass keine 2 Objekte gleiche Merkmalsaussprägung haben:
+
+  \begin{center}
+    $q := \frac{\prod_{i=0}^{l-1} (m-i)}{m^l} = \prod_{i=0}^{l-1} (1- \frac{i}{m})$
+  \end{center}
+
+  Benutze: $e^x \ge 1+x$.
+
+  \begin{equation*}
+    q \le \prod_{i=0}^l e^{- \frac{i}{m}} = e^{\sum_{i=0}^{l-1} (- \frac{i}{m})} = e^{- \frac{1}{m} \cdot \sum_{i=0}^{l-1} i} = e^{- \frac{l(l-1)}{2m}}
+  \end{equation*}
+
+  Wann ist $q \le \frac{1}{2}$?. Sicher, wenn
+
+  $e^{- \frac{l(l-1)}{2m}} \le \frac{1}{2} \Leftrightarrow \frac{l(l-1)}{2m} \ge ln(2) \leftrightarrow l^2 - l - 2m \cdot ln(2) \ge 0 \Leftrightarrow l \ge \frac{1 + \sqrt{1+8m \cdot ln(2)}}{2}$
+
+  \section{Geburtstagsattacke (gegen starke Koll.res.)}
+
+  Gegeben: H: $\{0,1\}^* \rightarrow \{0,1\}^k$
+
+  Angreifer erzeugt möglichst viele Hashwerte., diese werden auf Kollisionen untersucht. 
+
+  Wende 6.7 an: 
+
+  \begin{itemize}
+    \item Menge der Objekte = $\{0,1\}^*$
+    \item Merkmalausprägungen = Hashwerte
+    \item Anzahl aller möglichen Hashwerte m = $2^k$
+  \end{itemize}
+
+  Wahrscheinlichkeit $~$ $\frac{1}{2}$, dass Kollision vorliegt, bei $~ \sqrt{2^k} = 2^{\frac{k}{2}}$ vielen erzeugten Hashwerten.
+
+  \par \medskip
+
+  \par \medskip
+
+  k = 64 keine ausreichende Sicherheit. Wahrscheinlichkeit $\frac{1}{2}$ Kollision bei $2^{32}$ $\approx$ $4 \cdot 10^9$ erzeugten Hashwerten
+
+  \par \medskip
+
+  Forderung: $k \ge 128$, besser $k \ge 160$
+
+  \section{Bemerkung}
+
+  Weit verbreitete Hashfunktionen:
+
+  \begin{itemize}
+    \item MD5 (R. Rivest 1992) n = 128
+    \item SHA-1 (NSA, NIST 1992/93/95) n = 160
+    \item SHA-2-Familie (SHA-224, 256, 384, 512 NIST 2002/04)
+  \end{itemize} 
+
+  Kollision bei SHA-1 mit ca. $2^{51} - 2^{57}$ Hashoperationen (vgl. mit $2^{80}$)
+
+  \par \medskip
+
+  2007: NIST - Ausschreibung für neuen Stadard bei Hashfunktionen
+
+  2012: Gewinner KECCAK (Bertoni, Daemen, Peeters, van Assche). Länge des Hashwertes: 224 - 512 Bit 
+
+  Konstruktionsprinzipien: Paar, Pelzl, Kap. 11
+
+  \section{Authentifizierung}
+
+  Nachweis / Überprüfung der Identität.
+
+  Forderung: Niemand anderes als A darf sich als A ausgeben können (auch nicht der Verifizierer).
+
+  \par \medskip
+
+  Authentifizierung durch:
+
+  \begin{itemize}
+    \item Wissen
+    \item Besitz
+    \item biometrische Merkmale
+  \end{itemize}
+
+  \section{Passwörter}
+
+  A wählt Passwort w. Bei B, gegenüber dem sich A authentifizieren will, ist f(w) gespeichert, f Einwegfunktion (z.B. Hashfunktion).
+
+  \par \medskip
+
+  $\rightarrow$ Unsicher !
+
+  \par \medskip
+
+  \par \medskip
+
+  Besser: Einmal-Passwörter
+
+  \par \medskip
+
+  \par \medskip
+
+  Lamport, 1981:
+
+  f Einwegfunktion (öffentlich bekannt)
+
+  A: $w_A$, $f(w_A), f^2(w_A) = f(f(w_A)), ..., f^n(w_A)$
+
+  Am Anfang sendet A an B: $w_0 = f^n(w_A)$ (auf sicherem Weg)
+
+  \newpage
+
+  Authentifizierung: 
+
+  \begin{itemize}
+    \item A sendet $w_1 = f^{n-1}(w_A)$ an B
+
+    \item B testet, ob $f(w_1) = w_0$.
+
+  \end{itemize}
+
+  Nach der ersten Authentifizierung ersetz B $w_0$ durch $w_1$. Nächste Authentifizierung $A \rightarrow B$ $f^{n-2}(w_A) = w_2$, B: $f(w_2) = w_1$. Etc.
+
+  \par \medskip
+
+  \par \medskip
+
+  Vorteil: Aus $f^i(w_A)$ lässt sich $f^{i-1}(w_A)$ nicht rekonstruieren.
+
+  \section{Challenge-Response-Authentifizierungen}
+
+  Signatur von Zufallsstring, z.B. mit RSA-Verfahren. 
+
+  $(n,e)$ öffentlicher Schlüssel von A, $d$ geheimer Schlüssel von A)
+
+  $A \overset{auth.}{\rightarrow} B$
+
+  B wählt Zufallszahl $r < n$. A berechnet $r^d \mod n = c \rightarrow B$.
+
+  B verfiziert, ob $c^e \mod n = r$.
+
+  \par \medskip
+
+  \par \medskip
+
+  \textbf{Wichtig:} Authentifizierungsschlüssel und Verschlüsselungsschlüssel müssen verschieden sein !

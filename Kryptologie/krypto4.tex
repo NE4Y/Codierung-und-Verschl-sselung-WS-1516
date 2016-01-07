@@ -1,0 +1,512 @@
+\chapter{Public-Key-Systeme}
+
+\section{Grundidee (Diffie, Hellman, 1976)}
+
+Jeder Teilnehmer A hat Paar von Schlüsseln:
+
+\begin{itemize}
+  \item $P_A$: öffentlicher Schlüssel
+  \item $G_A$: geheimer Schlüssel
+\end{itemize}
+
+Zu jedem öffentlichen Schlüssel gehört öffentlich bekannte Verschlüsselungsfunktion $E_{P_A}$ (= $E(., P_A)$).
+
+\par \medskip
+
+B $\overbrace{\rightarrow}^{m}$ A. $m \rightarrow E_{P_A}(m) = c$ Chiffretext.
+
+\par \medskip
+
+Bedingungen:
+
+\begin{enumerate}
+  \item[1)] $E_{P_A}(m)$ muss schnell berechenbar sein, aber m darf für einen Angreifer aus Kenntnis von $E_{P_A}(m)$ nicht mit vertretbarem Aufwand berechenbar sein. (D.h. Invetierung von $E_{P_A}$ ist schwierig)
+
+  $E_{P_A}$ ist \underline{Einwegfunktion}.
+
+  \item[2)] A muss m aus c = $E_{P_A}(m)$ mit Hilfe von $G_A$ effizient berechnen können:
+
+  \begin{equation}
+    m = D_{G_A}(c)
+  \end{equation}
+
+  Injektive Einwegfunktion, die mit Zusatzinformation leicht zu berechnen sind, heißen \underline{Geheimtürfunktion} (trapdoor function).
+
+  Aus 1) und 2) folgt:
+
+  \item[3)] $G_A$ darf aus $P_A$ nicht effizient berechenbar sein.
+\end{enumerate}
+
+Es ist offenes Problem, ob Einwegfunktionen existieren.
+
+Notwendig: $P \neq NP$.
+
+Es gibt Kandidaten für Einwegfunktionen.
+
+\section{Das RSA-Verfahren}
+
+Rivest, Shamir, Adleman, 1977
+
+Beruht auf der Schwierigikeit der Faktorisierung großer Zahlen.
+
+\begin{enumerate}[label=(\alph*)]
+  \item \underline{Schlüsselerzeugung}
+
+  Wähle zwei große Primzahlen $p \neq q$ (z.B. ca 1000 Bit lang) (wie? später)
+
+  Bilde $n = p \cdot q$.
+
+  $\varphi(n) = |\{a : 1 \le a \le n, ggT(a,n) = 1\}| = (p-1) \cdot (q-1)$ (Eulersche $\varphi$-Funktion)
+
+  [Warum? Nicht teilerfremd zu n sind alle Vielfachen von p und alle Vielfachen von q, die $\le$ n sind.
+
+  $1 \cdot p, 2 \cdot p, 3 \cdot p ..., (q-1) \cdot p$
+
+  $1 \cdot q, 2 \cdot q, 3 \cdot q, ..., (p-1) \cdot q$, $q \cdot p $ = n 
+
+  $(q-1) + (p-1) + 1 = q + p -1$
+
+  \par \medskip
+
+  Teilerfremd: $n-q-p+1 = pq - q - p + 1 = (p-1) \cdot (p-1)$]
+
+  Wähle $1 < e \le \varphi(n)$ mit ggT(e, $\varphi(n)$) = 1 (Zufallszahl + Euklidischer Algorithmus).
+
+
+
+  \par \medskip
+
+  \underline{Öffentlicher Schlüssel} : $P_A = (n, e)$
+
+  \par \medskip
+
+  Wähle $1 \le d \le \varphi(n)$ mit $ed \equiv$ 1 (mod $\varphi(n)$)
+
+  [Wende erweiterten Euklidischen Algorithmus auf $e$ und $\varphi(n)$ an. Liefert $s,t \in \mathbb{Z}$ mit $s \cdot e + t \cdot \varphi(n)$ = ggT($e, \varphi(n)$) = 1
+
+  $d := s \mod \varphi(n)$ 
+
+  $d \cdot e \mod \varphi(n) = (s \cdot e + \underbrace{t \cdot \varphi(n)}_{\equiv 0 \mod \varphi(n)}) \mod \varphi(n) = 1$]
+
+  \underline{Geheimer Schlüssel}: $G_A = d$
+
+  (Jetzt kann man $p,q$ und $\varphi(n)$ löschen, und sollte es auch.)
+
+  \item \underline{Verschlüsselung}
+
+  B $\overbrace{\rightarrow}^{Nachricht}$ A, B codiert Nachricht als Zahl. zerlege die Zahl in Blöcke, jeder der Blöcke sei als Zahl $< n$.
+
+  Sei m solch ein Block, aufjedenfall als Zahl.
+
+  Verschlüsseln von m: $m^e \mod n = c$
+
+  \item \underline{Entschlüsselung}
+
+  $c^d = (m^e)^d \mod n = m^{ed} \mod n = m$
+  
+  Wieso gilt das?
+
+  Grund ist der \underline{kleine Satz von Fermat}:
+
+  p Primzahl, $a \in \mathbb{Z}, p \not | a \Rightarrow a^{p-1} \mod p = 1$
+
+  [$a \mod p, a² \mod p, ..., \ \ \ \ a^{n_1} \mod p = a^{n_2} \mod p, n_1 > n_2$
+
+  $a^{n_1 - n_2} \mod p = 1$, da $p \not | a$
+
+  Sei $m \in \mathbb{N}$ mit $a^m \mod p = 1$
+
+  U = $\{a \mod p, a² \mod p, ..., a^m \mod p \}$
+
+  $|U| = m$   U ist Untergruppe von ($\mathbb{Z}_p \setminus \{0\}, \odot$)
+
+  Satz von Lagrange: $|U|\ | \ |\mathbb{Z}_p \setminus \{0\}|, m|p-1$
+
+  p-1 = km
+
+  $a^{p-1} \mod p = a^{k \cdot m} \mod p = (a^m)^k \mod p = 1^k \mod p = 1$.]
+
+  ed = k $\cdot \varphi(n) + 1 =  k \cdot (p-1) \cdot (q-i) + 1$
+
+  $m^{ed} \mod n = m \cdot m^{k \cdot (p-1) \cdot (q-1)} \mod n$
+  
+  Ist $p \not | m$, so $m^{k(p-1)(q-1)} = (m^{p-1})^{k(q-1)} \mod p = 1$
+
+  $m^{ed} \mod p = m \cdot 1 \mod p = m \mod p $
+
+  Ist $p|m$, so $m \mod p = 0 = m^{ed} \mod p$
+
+  In jedem Fall: $m^{ed} \mod p = m \mod p$
+
+  \par \medskip
+
+  Analog: $m^{ed} \mod q  = m \mod q$
+
+  $\rightarrow m^{ed} \mod n = m \mod n \underbrace{=}_{m < n} m$
+\end{enumerate}
+
+\section{Berechnung modularer Potenzen}
+
+$m^e \mod n$
+
+\begin{center}
+  $e = \sum_{i=0}^{k} e_i2^i, \ \ e_i \in \{0,1\}, e_k = 1$
+\end{center}
+
+$m^e = m^{e_k2^k + ... + e_12+e_0} = m^{2^k} \cdot m^{e_{k-1}\cdot 2^{k-1}} \cdot ... \cdot m^{e_12} \cdot m^{e_0} = ((...((m² \cdot m^{e_k-1})² \cdot m^{e_{k-1}})² ...)² m^{e_1})² \cdot m^{e_o}$
+
+Suare-and-Multiply-Algorithmus  $2 \cdot log_2(e)$ = Maximalzahl der erforderten Multiplikationen / Quadrierungen.
+
+\par \medskip
+
+Nach jedem Rechenschritt mod n reduzieren. (In der Praxis will man Verschlüsseln beschleunigen: Man wählt $e$ von der Form $2^a+1$)
+
+\section{Sicherheit des RSA-Verfahrens}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Angreifer kennt n, nicht p,q (Faktorisierung ist schwer)
+
+  Wenn er $\varphi(n)$ kennt, so kann er d bestimmen (EEA)
+
+  $\varphi(n)$ aus n per Definition zu bestimmen ist aussischtslos.
+
+  Geht schnell, wenn er p,q kennt.
+
+  Tatsächlich: Fakt von n zu bestimmen bzw. $\varphi(n)$ zu bestimmen ist gleich schwierig.
+
+  Angenommen er kennt $\varphi(n)$.
+
+  $n = p \cdot q$.
+
+  $\varphi(n) = (p-1) \cdot (q-1) = n-p-q +1$
+
+  Dann kennt er $p+q = ir$.
+
+  $n = p \cdot q = p (r-p) = -p² + pr$
+
+  Quadratische Gleichung für p (und für q). Lösung ist einfach.
+
+  Tatsächlich:
+
+  \begin{itemize}
+    \item Faktorisierung von n
+    \item Berechnung von $\varphi(n)$
+    \item Bestimmung von d
+  \end{itemize}
+
+  Gleichschwierige Probleme.
+
+  Offen: Ist die Bestimmung von m aus $c = m^e \mod n$ (bei Kenntnis von e und n) genauso schwierig wie Bestimmung von d?
+
+  \item Berechnung von m aus $m^e \mod n = c$ ist einfach, falls $m^e < n$.
+
+  Dann: $m^e \mod n = m^e = c$
+
+  e-te Wurzel aus c: m
+
+  Einfach (binäre Suche).
+
+  Lösung für dieses Problem: Nur Teil von m ist tatsächlich Nachricht. Rest wird durch zufallsabhängiges (aber systematisches) Padding ergänzt.
+
+  Standard: OAEP (Optimal asymetric encryption padding)
+
+  \item Brute Force für Faktorisierung.
+
+  Teste alle Zahlen $\le \sqrt{n}$, ob sie Teiler von n sind.
+
+  Inputlänge: log(n) 
+
+  $\sqrt{n} = 2^{\frac{1}{2} log(n)}$ exponentiell. 
+
+  Unbekannt: Gibt es polyn. Faktorisierungsalgorithmen, d.h. mit Komplexität $O(log(n)^k)$, k fest? 
+
+  \par \medskip
+
+  Beste Faktorisierungsalgorithmen haben Komplexität $O(e^{c(log (n))^{frac{1}{3}} (log(log(n)))^{\frac{2}{3}}})$, c $\approx 1,923$
+
+  Dezember 2009: 768-Bit-Zahl faktorisiert (Kleinjung), Dauer: 2000 CPU-Jahre (2GHz)
+
+  1024 Bit: c.a 1000 mal grßerer Aufwand.
+
+  \par \medskip
+  
+  Gilt nicht mehr als sicher.
+
+  \par \medskip
+   
+  2048 bit: $10^9$ mal schwieriger als bei 1024-Bit Zahl
+
+  Vergleich: Brute Force für AES $\approx$ Faktorisierung von RSA - n mit 3064-Bit n.
+\end{enumerate}
+  \section{Bestimmung großer Primzahlenn}
+  Geht schnell.  
+
+  Idee: Wenn p eine Primzahl, $1 \le a \le p-1$, so ist $a^{p-1} \mod p = 1$ (kleiner Satz von Fermat)
+
+  Sei $n \in \mathbb{N}$. Wähle $1 \le a \le n-1$. Teste, ob $a^{n-1} \mod n = 1$.
+
+  Wenn nein: n ist keine Primzahl!
+
+  Wenn ja: Wähle neues a.  \underline{Fermat-Test}
+  
+  Wenn n Fermat-Test für alle $1 \le a \le n-1$ besteht, so ist n Primzahl.
+
+  Leider gibt es unendlich viele zusammengesetzte Zahlen n, die den Fermat-Test für "fast" alle a bestehen (nämlich für alle a mit ggT(a,n) = 1) (Carmichael-Zahlen)
+
+  Verbesserung: \underline{Miller-Rabin-test}
+
+  Sei p eine Primzahl, $p \neq 2$. $p-1= 2^e \cdot t$, $2 \not | t$
+
+  $a^{p-1} = 1$  (Fermat)
+
+  $(a^{2^{e-1} \cdot t})^2 = 1$
+
+  $a^{2^{e-1} \cdot t}$ ist Nullstelle des Polynoms: $x^2 -1 \in \mathbb{Z}_p[x]$
+
+  $\mathbb{Z}_p$ Körper $\Rightarrow x^2 -1$ hat genau 2 Nullstellen in $\mathbb{Z}_p$, nämlich 1 und -1 $\mod p = p-1$
+
+  $a^{2^{e-1} \cdot t}$ $\equiv \begin{cases}1 \textnormal{ (mod p)} \\ -1 \textnormal{ (mod p)}\end{cases}$
+
+  Falls $e-1 \ge 1$ und falls $a^{2^{e-1} \cdot t} \equiv 1 \textnormal{ (mod p)}$ 
+
+  so $(a^{2^{e-2} \cdot t})^2 \equiv 1 \textnormal{ (mod p)}$ $\Rightarrow a^{2^{e-2} \cdot t} \equiv \begin{cases} 1 \textnormal{ (mod p)} \\ -1 \textnormal{ (mod p)} \end{cases}$
+
+  Ist p eine Primzahl, p-1 = $2^e \cdot t, 1 \le a \le p-1$, so gilt:
+
+  entweder $a^t \equiv 1 \textnormal{ (mod p)}$ oder $a^{2^i \cdot t} \equiv -1 \textnormal{ (mod p)}$ für ein $i \in \{0,...,e-1\}$
+
+  Miller-Rabin: Teste mit n statt p.
+
+  Test nicht erfüllt: n ist keine Primzahl.
+
+  Test erfüllt: ? Wähle neues a!
+
+  Es gilt: Ist n keine Primzahl, so gibt es mindestens $\frac{3}{4} \varphi(n)$ a's, $1 \le a \le n-1$ und ggT(a,n) = 1, die zeigen, dass n keine Primzahl ist.
+
+  Besteht das n für mindestens $\frac{1}{4} \varphi(n)$ a's mit $1 \le a \le n-1$ und ggT(a,n) = 1 den Miller-Rabin-Test, so ist n Primzahl.
+
+  \section{Das Diffie-Hellman-Verfahren zur Schlüsselvereinbarung (1976)}
+
+  D-H ist kein Public-Key-Verfahren.
+
+  Schlüsselvereinbarung über unsicheren Kanal.
+
+  Es beruht auf folgendem Kandidaten für Einwegfunktion:
+
+  \begin{enumerate}[label=(\alph*)]
+    \item p Primzahl, $\mathbb{Z}_p^* := \mathbb{Z}_p \setminus \{0\}$ ist Gruppe bezüglich Multiplikation $\odot$
+
+    Algebra: $\exists g \in \mathbb{Z}_p^*$ mit $\mathbb{Z}_p^* = \{g, g^2, ..., g^{p-1} = 1\}$
+
+    g heißt \underline{Primitivwurzel} mod p.
+
+    $\{0, ..., p-2\} \rightarrow \{1,...,p-1\}$
+
+    $a \mapsto g^a \mod p $
+
+    Kandidat für Einwegfunktion.
+
+    \par \medskip
+
+    Umkehrfunktion: \underline{diskreter Logarithmus}
+
+    Keine polyn. Algorithmen bekannt.
+
+    \textbf{Beispiel:} p = 7, g = 3
+
+    $\{3, 3^2 = 2, 3^3 = 6, 3^4 = 4, 3^5 = 5, 3^6 = 1\}$
+
+    \item Das Verfahren:
+
+    A und B einigen sich auf große Primzahl p und Primitivwurzel g mod p.
+
+    Können öffentlich bekannt sein.
+
+    \begin{enumerate}
+      \item[1.] A wählt zufällig (geheimes) $a \in \{2,...,p-2\}$ und berechnet $x := g^a \mod p$.
+
+      A sendet x an B.
+
+      \item[2.] B wählt zufällig (geheimes) $b \in \{2,...,p-2\}$ und berechnet $y := g^b \mod p$. B sendet y an A.
+
+      \item[3.] A berechnet $y^a \mod p =(g^b)^a \mod p = g^{ab} \mod p$
+
+      \item[4.] B berechnet $x^b \mod p = (g^a)^b \mod p = g^{ab} \mod p$
+    \end{enumerate}
+
+    $K := g^{ab} \mod p$ ist gemeinsamer Schlüssel.
+
+    \item Sicherheit:
+
+    Angreifer kennt $p,g, g^a \mod p, g^b \mod p$.
+
+    Möchte gerne $g^{ab} \mod p$ wissen!
+
+    \par \medskip
+
+    \par \medskip
+
+    D-H-Problem:
+
+    Gibt es schnellen Algorithmus zur Bestimmung von $g^{ab} \mod p$ bei Kenntnis von p,g $g^a \mod p, g^b \mod p$? - Unbekannt
+
+    \par \medskip
+
+    Einziger bekannter Weg: 
+
+    Berechne a aus x = $g^a \mod p$ (DLP = diskretes Logarithmus Problem) und dann K = $(y)^a \mod p$.
+
+    p sollte mindestens 2048 Bit haben.
+  \end{enumerate}
+
+  \section{Der Man-in-the-Middle-Angriff auf D-H-Verfahren}
+
+  Mallory wählt zufälig $c \in \{2,...,p-2\}$.
+
+  \begin{center}
+    $A \leftarrow M \rightarrow B$
+  \end{center}
+
+  M fängt $x = g^a \mod p$ von A ab, $y = g^b \mod p$ von B ab.
+
+  M schickt A und B: $g^c \mod p$.
+
+  A berechnet $K_A$ = $g^{ac} \mod p$ und glaubt, das ist der gemeinsame Schlüssel mit B.
+
+  B berechnet $K_B = g^{bc} \mod p$ und glaubt, das ist der gemeinsame Schlüssel mit A.
+
+  \par \medskip
+
+  M kennt $K_A$ und $K_B$.
+
+  \par \medskip
+
+  $A \overbrace{\longrightarrow}^{m} \underbrace{M}_{\textnormal{entschlüsselt}} \overbrace{\longrightarrow}^{\textnormal{ verschlüsselt mit $K_B$}} B$
+
+  \par \medskip
+  
+  Authentifizierung von A gegenüber B und umgekehrt notwndig.
+
+  \section{ElGamal-Verschlüsselungsverfahren (T. ElGamal, 1984)}
+
+  \subsection{Schlüsselerzeugung:}
+
+  \begin{itemize}
+    \item[A:] p,g wie bei Diffie-Hellman.
+
+    a zufällig in $\{2,..,p-2\}, x = g^a \mod p$
+
+    \underline{Offentlicher Schlüssel}: (p,g,x) 
+
+    \underline{Geheimer Schlüssel}: a 
+  \end{itemize}
+
+  \subsection{Verschlüsselung}
+
+  Klartextblock m, 0 $\le m \le p-1$, $B \longrightarrow A$
+
+  B wählt $b \in \{2,...,p-2\}$ zufällig.
+
+  $y = g^b \mod p$ und $f := x^b \cdot m \mod p$
+
+  \par \medskip
+
+  Er sendet (y, f) an A.
+
+  \subsection{Entschlüsselung}
+
+  A berechnet $y^a \mod p$ = $x^b \mod p$ (= K)
+
+  $(y^a)^{-1} \cdot f = (x^b)^{-1} \cdot f = m$ (mod p)
+
+  \par \medskip
+
+  Wie berechnet sie $(y^a)^{-1} \mod p$?
+
+  \begin{itemize}
+    \item Erweiterter Euklidischer Algorithmus ($y^a, p$)
+    \item $(y^a)^{p-2} \mod p = (y^a)^{-1}$, denn $y^a \cdot (y^a)^{p-2} = (y^a)^{p-1} = 1$ (mod p) (Fermat)
+  \end{itemize}
+
+  \textbf{Wichtig:}
+
+  B muss bei Verschlüsselung von neuem Klartextblock neues b wählen, sonst kennt Angreifer $f_1 = x^b \cdot m_1$, $f_2 = x^b \cdot m_2$.
+
+  \par \medskip
+
+  Angenommen Angreifer kennt $m_1$. Kennt $f_1 \cdot m^{-1}$ = $x^b$ (mod p)
+
+  $(x^b)^{-1} \cdot f_2 = m_2$ (mod p)
+
+  \par \medskip
+
+  \par \medskip
+
+  Sicherheit von ElGamal = Sicherheit von Diffie-Hellman
+
+  \section{Bug-Attacks}
+
+  (Biham, Carmeli, Shamir) 2015 Journal of Cryptology
+
+  \par \medskip
+
+  RSA-Verfahren (deterministisch) (RSA-CRT-Entschlüsselung).
+
+  $c = m^e \mod n$, $n = p \cdot q$.
+
+  $m_1 = c^d \mod p$
+
+  $m_2 = c^d \mod q$
+
+  $m_1,m_2 \longrightarrow m$ (Chinesischer Restsatz)
+
+  \par \medskip
+
+  \par \medskip
+
+  $a,b$ 64-bit Zahlen.
+
+  $a \cdot b$ wir dauf 64-Bit-Mutliplier falsch berechnet. (1024-Bit n)
+
+  \begin{center}
+    $p < \sqrt{n} < q$
+  \end{center}
+
+  Angreifer bildet C in der Nähe von $\sqrt{n}$.
+
+  In der Regel: $p < C < q$
+
+  \par \medskip
+
+  (Chosen-Ciphertext-Angriff) 
+
+  C entschlüsselt mit RSA-CRT.
+
+  $C \mod p$ enthält in der Regel nicht mehr a und b.
+
+  Entschlüsselung mod p $\rightarrow$ korrekt $(M_1)$
+
+  C mod q = C
+
+  $C^d \mod q$ berechnen $\rightarrow$ \underline{$a \cdot b$} (BUG) wird auf Chip berechnet.
+
+  Entschlüsselung mod q nicht korrekt $(M_2)$.
+
+  $M_1, M_2$ mit Chinesischem Restsatz zu M.
+
+  $M \mod p = M_1$
+
+  $M \mod q = M_2$
+
+  \par \medskip
+
+  Angreifer erhält M: $M^e \mod n = C' \neq C$
+
+  $C' \mod p = C \mod p$
+  
+  $C' \mod q \neq C \mod q$
+
+  \par \medskip
+
+
+  $p |$ggT($C' - C$, n), $q \not | ggT(C'- C, n) \rightarrow$ ggT($C' - C, n$) = p. RSA ist geknackt.

@@ -1,0 +1,244 @@
+\chapter{Der Advanced Encryption Standard (AES)}
+
+\textbf{1970'er:} Entwickeltdes DES (auf der Basis einer Feistelchiffre). Blocklänge n = 64, effektive Schlüssellänge 56 Bit. Anfällig gegen Brute-Force-Angriffe.
+
+\par \medskip
+
+\textbf{1997:} Ausschreibung durch NIST für neuen Verschlüsselungsstandard 
+
+\par \medskip
+
+\textbf{2000:} Rijndael-Verfahren (J. Daemen, V. Rijmen)
+
+\par \medskip
+
+\textbf{2002:} AES 
+
+\section{Struktur des AES}
+
+AES ist iterierte Blockchiffre.
+
+Blöcklängen: 128, 192, 256 Bit
+
+Schlüssellängen: 128, 192, 256 Bit 
+
+Blocklängen unabhängig von Schlüssellängen
+
+Anzahl der Runden (abhängig von gewählten Bitlängen), r= 10, 12, 14
+
+\par \medskip
+
+Zwischenergebnisse nach jeder Runde:
+
+Zustände (States), $S_0, ..., S_9$.
+
+Jede Runde besteht aus 4 Transformationen:
+
+\par \medskip
+
+$S_i \rightarrow$ Sub Bytes $\rightarrow $ Shift Rows $\rightarrow $ Mix Columns $\rightarrow \oplus K_{i+1} \rightarrow S_{i+1}$ (Bild)
+
+\par \medskip
+
+Mix Columns fällt in der letzten Runde weg.
+
+\textbf{Vorbemerkung}
+
+128 Bit-Blöcke: $4 \times 4$ - Matrizen, jeder Eintrag Byte.  $\begin{pmatrix}a_{00} & a_{01} & a_{02} & a_{03} \\ a_{10} & a_{11} & a_{12} & a_{13} \\ a_{20} & a_{21} & a_{22} & a_{23} \\ a_{30} & a_{31} & a_{32} & a_{33} \end{pmatrix} \equiv$  Block ($a_{00}a_{10}a_{20}a_{30}a_{01}...a_{33}$) (Spaltenweise auslesen).
+
+\par \medskip
+
+Bytes werden häufig als Elemente in einem Körper der Ordnung $2^8$ aufgefasst (Anzahl der Elemente).
+
+\par \medskip
+
+\textbf{Beispiel} für endlichen Körper: $\mathbb{Z}_p$ = $\{0,...,p-1\}$, p Primzahl
+
+\begin{equation}
+  a \oplus b = a+b \mod p
+\end{equation}
+
+\begin{equation}
+  a \odot b = a \cdot b \mod p
+\end{equation} 
+
+$\mathbb{Z}_2 = \{0,1\}$, $\oplus$ XOR, $\odot$ $\cdot$, $\wedge$
+
+Körper der Ordnung $2^8: \mathbb{F}_{2^8}$
+
+Elemente sind alle Polynome vom Grad $<$ P über $\mathbb{Z}_2$:
+
+\begin{equation}
+  a_7x^7+...+a_1x+a_0 \leftrightarrow (a_7, a_6, ..., a_0), \ \ a_i \in \mathbb{Z}_2
+\end{equation}
+
+Addition in $\mathbb{F}_{2^8}$: Addition von Polynomen.
+
+Multiplikation in $\mathbb{F}_{2^8}$: $f,g \in \mathbb{F}_{2^8}$
+
+\begin{equation}
+  f \odot g := f \cdot g \mod h
+\end{equation}
+
+wobei h das irreduzible Polynom $h = x^8 + x^4 + x^3 + x + 1$
+
+\par \medskip
+
+\textbf{Beispiel:} 
+
+$(x^7 + x + 1) \odot (x^3 + x) = x^{10} + x^8 + x^4 + x^3 + x^2 + x \mod h = x⁶ + x⁵ +x³ + 1$
+
+In $\mathbb{F}_{2^8}$ existiert zu jedem $0 \neq g \in \mathbb{F}_{2^8}$ ein $g^{-1} \in \mathbb{F}_{2^8}$ mit $g \circ g^{-1} = 1$
+
+Berechnung mit dem erweiterten Euklidischen Algorithmus (wie in $\mathbb{Z}$).
+
+\begin{equation}
+  0 \neq f, g \in \mathbb{Z}_2[x]: u,v \in \mathbb{Z}_{2}[x] \textnormal{ mit } u \cdot f + v \cdot g = ggT(f,g)
+\end{equation}
+
+$0 \neq g \in \mathbb{F}_{2^8}, h$ irred. Polynom. ggT(g,h) = 1, da h irred.
+
+\par \medskip
+
+EEA: $u \cdot h + v \cdot g = 1, u,v \in \mathbb{Z}_{2}[x]$
+
+$(v \mod h) \odot g = (v \cdot g) \mod h = 1$
+
+\par \medskip
+
+\textbf{(Verkürtzter) EEA in $\mathbb{Z}_2[x]$:}
+
+
+Input: $f,g \in \mathbb{Z}_2[x], g \neq 0$, Grad(f) $\geq$ Grad(g)
+
+Output: $ggT(f,g), v \in \mathbb{Z}_2[x]: v \cdot g \mod f = ggT(f,g)$:
+
+\begin{enumerate}
+  \item $s := f$, $t:=g$, $v_1 := 0$, $v_2 := 1$, $v:=1$
+  \item Solange $s \mod t \neq 0$ wiederhole
+
+  $q:= s \textnormal{ div } t, r := s \mod t$
+
+  $v := v_1 - q \cdot v_2$, $v_1 := v_2$, $v_2 := v$
+
+  $s := t, t := r$
+
+  \item Output: $t = ggT(f,g), v$
+\end{enumerate}
+
+Zur Bestimmung von $g^{-1}$ für $0 \neq g \in \mathbb{F}_{2^8}$ wende EEA an mit $f = h$. $g^{-1} = v \mod h$. 
+
+\section{SubBytes-Transformation}
+
+Eingabe: Zustand $S_i = \begin{pmatrix}b_{00} & ... & b_{03} \\ . & & . \\ . & & . \\ b_{30} & ... & b_{33} \end{pmatrix}$, $b_{ij}$ Bytes
+
+Jedes Byte aus $S_i$ wird einzeln verändert. Sei $g = (b_7,b_6,...,b_0)$ ein Byte.
+
+\par \medskip
+
+\underline{1.Schritt:} $g \neq 0: g \mapsto g^{-1}, 0 \mapsto 0$ (fasse g als Element in $\mathbb{F}_{2^8}$)
+
+\underline{2. Schritt:} Ergebnis ($c_7,c_6,...,c_0$) nach 1. Schritt wird affin-linearer Transformation unterworden:
+
+\begin{equation}
+  (c_0, ..., c_7) \cdot A + b = (d_0, ..., d_7)
+\end{equation}
+
+$A = \begin{pmatrix}1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 \\ . & . & . &. &. &. &.&. \\ . & . & . &. &. &. &.&. \\. & . & . &. &. &. &.&. \\ . & . & . &. &. &. &.&. \\ . & . & . &. &. &. &.&. \end{pmatrix}$ 
+
+Übrige Zeilen durch zyklischen Shift der 1. Zeile um 1,2,...,7 Position nach rechts.
+
+\par \medskip
+
+$b = (11000110)$
+
+Ergebnis: $(d_7, ..., d_0)$
+
+SubByes wird in AES durch Table Lookup in einer $16 \times 16$ - Matrix beschrieben:
+
+Einträge sind 0,...,255 (in gew. Reihenfolge).
+
+Byte b = ($b_7,b_6,...,b_0$) bestimmt durch $b_7b_6b_5b_4$ die Zeile und $b_3b_2b_1b_0$ Spalte (Zeichen und Spalten sind mit 0,...,15 nummeriert). Eintrag an der entsprechenden Stelle ist Ergebnis von SubBytes angewendet auf b.
+
+\section{Shift Rows und MixColumns-Transformation}
+\begin{itemize}
+  \item Shift Rows: Jede der 4 Zeilen nach der $4 \times 4$ - Matrix (nach SubBytes) wird zyklisch nach links verschoben: i-te Zeile um i-1 Stellen (i=1,2,3,4).
+  \item MixColumns: Elemente der Eingangsmatrix werden als Elemente in $\mathbb{F}_{2^8}$ betrachtet. Diese Matrix wird von links mit M = $\begin{pmatrix}x & x+1 & 1  & 1\\ 1 & x & x+1 & 1 \\ 1 & 1 & x & x+1 \\ x+1 & 1 & 1 & x \end{pmatrix}$ (über $\mathbb{F}_{2^8}$) über $\mathbb{F}_{2^8}$ multipliziert.
+
+  x entspricht (0, ...,0,1,0)
+
+  1 entspricht (0, .....,0,1)
+
+  M $\begin{pmatrix}a_{00} & . & . \\ a_{10} & . & . \\ a_{20} &. &.  \\ a_{30} &. &. \end{pmatrix} =  \begin{pmatrix} x \cdot a_{00} + x \cdot a_{10} + a_{10} + a_{20} + a_{30} & ... \\  a_{00} + x a_{10} + x a_{20} + a_{20} + a_{30} & ... \\ ... & ... \end{pmatrix}$
+\end{itemize}
+
+\section{Rundenschlüsselerzeugung}
+
+Ausgangsschlüssel hat 128 Bit. Wird geschrieben als $4 \times 4$ - Matrix von Bytes, spaltenweise zu lesen.
+
+Spalten $w(0), w(1), w(2), w(3)$.
+
+Definiere 40 weitere Spalten (a 4 Bytes).
+
+w(0),...,w(i-1) seine schon definiert. ($i \ge 4$)
+
+$i \not \equiv 0$ (mod 4): w(i) := w(i-4) $\oplus$ w(i-1) (Komponentenweise XOR-Verkn.)
+
+$i \equiv 0$ (mod 4). w(i) := w(i-4) $\oplus$ T(w(i-1)), wobei T folgende Transformation ist:
+
+\begin{equation}
+  w(i-1) = \begin{pmatrix}a & b & c & d \end{pmatrix}, \textnormal{ a,b,c,d Bytes}
+\end{equation}
+
+Wende auf b,c,d,a SubBytes an. Liefert e,f,g,h 
+
+\par \medskip
+
+Berechne:
+
+\begin{equation}
+  r(i) = (00000010)^{\frac{i-4}{4}}
+\end{equation}
+
+Potenz in $\mathbb{F}_{2^8}$.
+
+$i=4, \ x^0 = 1 \leftrightarrow (00000001)$ 
+
+$i=8, \ x^1 = x \leftrightarrow (00000010)$
+
+$i=12, \ x² \leftrightarrow (00000100)$
+
+...
+
+$i=36 \  x^8 \textnormal{ in } F_{2^8}$ reduziert mod $x^8 + x⁴ + x³ + x + 1 = x^4 + x³ + x + 1 \leftrightarrow (00011011)$
+
+\par \medskip
+
+T(w(i-1)) = $\begin{pmatrix}e \oplus r(i) \\ f \\ g \\ h \end{pmatrix}$
+
+\par \medskip
+
+Rundenschlüssel $K_i$ besteht aus Spalten $w(4i),...,w(4i+3)$
+
+\section{Entschlüsselung}
+
+Alle Transformationen in AES sind invertierbar. mit der umgekehrten Reihenfolge der Rundenschlüssel Transformationen invertieren.
+
+\section{Schnelligkeit und Sicherheit}
+
+\begin{itemize}
+  \item Schnelligkeit: 
+
+  Software: 200 MBit/sec - 2 GBit/sec
+
+  Hardware: 2GBit/sec - 70 GBit/sec
+
+  \item Sicherheit:
+
+  Nach 2 Runden vollständige Diffusion. 
+
+  Rundenschlüsselerzeugung mit SubBytes verhindert, dass Regelmäßigkeiten im Ausgangsschlüssel fortpflanzen. Verschiednee Ausgangsschlüssel haben nur sehr selten einen Rundenschlüssel gemeinsam.
+
+  AES ist resistent gegen klassische kryptoanalytische Angriffe (differentielle Kryptoanalyse, lineare Kryptoanalyse).
+
+\end{itemize}

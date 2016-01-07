@@ -1,0 +1,286 @@
+\chapter{Symmetrische Blockchiffren}
+
+\section{Blockchiffre}
+
+Klartext wird in Blöcke von fester Länge n zerlegt. Jeder Block wird einzeln verschlüsselt. Bei festem Schlüssel wird ein und derselbe Block immer in der gleichen Weise verschlüsselt (einfachstes Szenario). 
+
+\textbf{Häufig:} Klartextblocklänge = Chiffretextblocklänge
+
+\par \medskip
+
+R = S = $\{1, 1\}$. Es gibt $2^n$ Blöcke der Länge n.
+
+Jede Blockchiffre ist Permutation dieser $2^n$ Blöcke. Insgesamt $(2^n)!$ viele Blockchiffren der Länge n.
+
+
+\textbf{Schlüssel:} Permutation
+
+\textbf{Speicherung:} $2^n$ Bider von (0,...,0),...,(1,...,1). Insgesamt $n \cdot 2^n$ Bit.
+
+\subsubsection{Beispiel}
+
+n = 64. Ein Schlüssel erfordert $2^{70}$ Bit $\approx$ 13.5 Millionen Festplatten a 10 TB.
+
+\subsubsection{Lösung}
+
+Es wird nur eine ausgewählte Menge von Permutationen der Blöcke als Schlüsselmenge verwendet.
+
+\section{Lineare Chiffren}
+
+Klartextalphabet = Chiffretextalphabet = $\mathbb{Z}_k$ = $\{0, ..., k-1\}$
+
+\textbf{Klartextblöcke}: Elemente in $\mathbb{Z}_{k}^n$
+
+Lineare Chiffre über $\mathbb{Z}_k$ (Blocklänge n):
+
+m = ($V_1,...,V_n$), $V_i \in \mathbb{Z}_k$, Klartextblock.
+
+\subsubsection{Verschlüsseln}
+
+m $\underbrace{\rightarrow}_{Verschl.} m \cdot A \in \mathbb{Z}_{k}^{n}$, A $n \times n$ - Matrix über $\mathbb{Z}_k$.
+
+($V_1, ..., V_n$) $\cdot$ $\begin{pmatrix}a_{11} & . & . & . & a_{1n} \\ . &  &  &  & . \\ . & & & & . \\ . & & & & . \\ a_{n1} & . & . & . & a_{nn} \end{pmatrix}$ = ($a_{11}V_1 + ...+a_{n1}V_n, ..., a_{1n}V_1 + ... + a_{nn}V_n$) 
+
+Abb $m \rightarrow m \cdot A$ ist invertierbar (d.h. Permutation), wenn A invertierbar ist, das heißt wenn Matrix $A^{-1}$ existiert mit $A \cdot A^{-1}$ = $A^{-1} \cdot A = E_n$.
+
+$c = m \cdot A$.
+
+\newpage
+
+\textbf{Entschlüsselung:}
+
+$c \cdot A^{-1}$ = $m \cdot (A \cdot A^{-1}) = m \cdot E_n = m$.
+
+\par \medskip
+
+Wann ist A invertierbar und wie berechnet man $A^{-1}$?
+
+$\rightarrow$ Detrminante von A $det(A) \in \mathbb{Z}_k$.
+
+$det(a) = a$
+
+$det\begin{pmatrix}a_{11} & a_{12} \\ a_{21} & a_{22}\end{pmatrix} = a_{11} \cdot a_{22} - a_{12} \cdot a_{21}$.
+
+\par \medskip
+
+Inverse zu A (wenn sie existiert):
+
+\begin{equation}
+  A^{-1} = \underbrace{(det(A))^{-1}}_{Inveres \ in \ \mathbb{Z}_k} \cdot B, B = (b_{ij}), b_{ij} = (-1)^{i+j} det(A_{ji})
+\end{equation}
+
+$A_{ji}$ $(n-1) \times (n-1)$ - Matrix, die aus A durch streichen j-ten Zeile und i-ten Spalte entsteht.
+
+det(A) ist invertierbar in $\mathbb{Z}_k$ $\Leftrightarrow$ ggT(det(A),k) = 1
+
+\par \medskip
+
+m $\rightarrow$ m $\cdot$ A ist invertierbar $\Leftrightarrow$ ggt(det(A),k) = 1.
+
+\subsubsection{Spezialfall n = 2}
+
+ggT($a_{11} \cdot a_{22} - a_{12} \cdot a{21}, k$) = 1
+
+$A^{-1} = (a_{11} \cdot a_{22} - a_{12} \cdot a_{21})^{-1} \cdot \begin{pmatrix}a_{22} & -a_{12} \\ -a_{21} & a_{11}\end{pmatrix}$
+
+\subsection{Beispiel}
+
+$\mathbb{Z}_6$, k = 6, n = 2.
+
+\par \medskip
+
+A = $\begin{pmatrix}0 & 1 \\ 1 & 3 \end{pmatrix}$  det(A) = -1 mod 6 = 5
+
+\par \medskip
+
+ggT(5,6) = 1
+
+\par \medskip
+
+$A^{-1} = 5^{-1} \begin{pmatrix}3 & 5 \\ 5 & 0 \end{pmatrix}$, $5^{-1} = 5$ in $\mathbb{Z}_6$.
+
+\par \medskip
+
+= $5 \cdot \begin{pmatrix}3 & 5 \\ 5 & 0 \end{pmatrix}$.
+
+\par \medskip
+
+\subsubsection{Verschlüsseln von (1,3) mit A}
+
+(1,3) $\cdot \begin{pmatrix}0 & 1 \\ 1 & 3 \end{pmatrix} \underbrace{=}_{mod \ 6} (3,4)$.
+
+\par \medskip
+
+Nachricht (1 3 2 5)
+
+\par \medskip
+(2,5) $\begin{pmatrix}0 & 1 \\ 1 & 3 \end{pmatrix} = (5,5)$.
+
+\par \medskip
+Chffretext: (3 4 5 5)
+
+\subsubsection{Entschlüsselung:}
+
+(3,4) $\cdot A^{-1} = (3,4) \cdot \begin{pmatrix}3 & 1 \\ 1 & 0 \end{pmatrix} = $(1 3)
+
+\par \medskip
+
+(5.5) $\cdot A^{-1}$ = (2,5).
+
+\par \medskip
+\par \medskip
+\par \medskip
+
+Anzahl der Schlüssel = Anzahl der invertierbaren $n \times n$ - Matrizen über $\mathbb{Z}_k$.
+
+Für k = 2: ($2^n -1) (2^n-2) (2^n - 2^2) ... (2^n - 2^{n-1})$
+
+n = 64: $\approx 0,29 \cdot 2^{4096}$
+
+\section{Known-Plaintext-Angriff auf lineare Chiffren}
+
+$m \in \mathbb{Z}_{k}^n$, $m \rightarrow m \cdot A$, A invertierbare $n \times n$ - Matrix über $\mathbb{Z}_k$.
+
+Angreifer kennt Klartextblöcke $m_i$ und zugehörige Chiffretextblöccke $c_i$. Er will A ermitteln.
+
+Er benötigt \underline{n} Klartextblöcke $m_1, ...,m_n$  mit zugehörigen Chiffretextblöcken $c_1, ..., c_n$.
+
+Daraus wird er häufig A ermitteln können:
+
+$m_i \cdot A = c_i$, $i=1,...,n$.
+
+\par \medskip
+
+M = $\begin{pmatrix}m_1 \\ m_2 \\ . \\ . \\ m_n \end{pmatrix}$, C = $\begin{pmatrix}c_1 \\ c_2 \\ . \\ . \\ c_n \end{pmatrix}$ $n \times n$ - Matrizen über $\mathbb{Z}_k$.
+
+\par \medskip
+
+M $\cdot$ A = C
+
+Falls M invertierbar ist, so berechne $M^{-1}$.
+\tabularnewline
+Dann: $M^{-1} \cdot C$ = $M^{-1} (MA) = (M^{-1} M) A = E_n A = A$.
+
+\subsubsection{Beispiel}
+
+n = 2, k = 26
+
+Angneommen wir wissen: KRYPTO $\rightarrow$ QLIPRL mit linearer Chiffre.
+
+$\underbrace{K}_{10} \underbrace{R}_{17} \underbrace{Y}_{24} \underbrace{P}_{15} \underbrace{T}_{19} \underbrace{O}_{14} \rightarrow \underbrace{Q}_{16} \underbrace{L}_{11} \underbrace{I}_{8} \underbrace{P}_{15} \underbrace{R}_{17} \underbrace{L}_{11}$
+
+(n = 2)
+
+\par \medskip
+
+M = $\begin{pmatrix}10 & 17 \\ 24 & 15\end{pmatrix}$, ggT(det(M), 26) = 1 ? Nein, da det(M) gerade.
+
+\par \medskip
+
+Stattdessen:
+
+\par \medskip
+
+M = $\begin{pmatrix}10 & 17 \\ 19 & 14 \end{pmatrix}$, det(M) = ($10 \cdot 14 - 17 \cdot 19$) mod 26 = 25.
+
+\par \medskip
+
+$(det(M))^{-1}$ = -1 mod 26 = 25
+
+$M^{-1} = (-1) \begin{pmatrix}14 & - 17 \\ -19 & 10 \end{pmatrix}$ mod 26
+
+\par \medskip
+
+=  $\begin{pmatrix}12 & 17 \\ 19 & 16 \end{pmatrix}$.
+
+\par \medskip
+
+Zugehöriges C: C = $\begin{pmatrix}16 & 11 \\ 17 & 11 \end{pmatrix}$.
+
+\par \medskip
+
+A = $M^{-1} \cdot C = \begin{pmatrix}12 & 17 \\ 19 & 16 \end{pmatrix} \cdot \begin{pmatrix}16 & 11 \\ 17 & 11 \end{pmatrix} \underbrace{=}_{mod \ 26} \begin{pmatrix}13 & 7 \\ 4 & 21 \end{pmatrix}$
+
+\par \medskip
+
+(10 17) A = (16 11)
+
+(24 15) A = (8 15)
+
+(19 14) A = (17 11)
+
+$\rightarrow$ Test
+
+\section{Bemerkung}
+
+Häufig kann Sicherheit von Blockchiffren erhöht werden durch Hintereinanderausführung mehrerer Blockchiffren. Sinnlos bei linearen Blockchiffren:
+
+2 x lineare Blockchiffre = 1x lineare Blockchiffre
+
+\section{Diffusion und Konfusion}
+
+Shannon, 1949 (Theory of Secrecy Systems)
+
+Kriterien für gute Chiffrierverfahren.
+
+\subsection{Diffusion}
+
+Statistische Aufälligkeiten im Klartext sollen im Chiffretex nicht mehr erkennbar sein.
+
+\textbf{Insbesondere:} Jedes Chiffretextzeichen muss von mehreren Klartextzeichen abhängen.
+
+\subsection{Konfusion}
+
+Aus statistischen Eigenschaften des Chiffretextes soll nicht auf den Schlüssel zurückgeschlossen werden.
+
+\textbf{Insbesondere:} Jedes Chiffretextzeichen hängt von mehreren Schlüsselzeichen ab.
+
+\par \medskip
+
+
+Lineare Chiffren: gute Diffusion, halbwegs gute Konfusion.
+
+\section{Feistel-Chiffren}
+
+Horst Feistel, IBM (1915-1990)
+
+1971: Konstruktionsprinzip für symmetrische Blockchiffren. Wichtigste Realisierung: DES (Data Encryption Standard)
+
+\par \medskip
+
+\textbf{Prinzip:}
+
+\begin{enumerate}
+  \item Folge von Blocksubstitutionen und Blocktranspositionen (= Permutation der Einträge in einem Block). (Hohe Diffusion und Konfusion).
+  \item Erzeugung von Rundenschlüsseln aus Ausgangsschlüssel.
+\end{enumerate}
+
+$m \in \mathbb{Z}_{m}^{n}$, n gerade
+
+\Tree [.\text{Klartextblock m} [.$L_0$ ] $R_0$ ]
+
+Bild kommt von Maxi
+
+m = ($L_0, R_0$)
+
+$L_i = R_{i+1}$
+
+$R_i = L_{i-1} \oplus f_{k_i}(R_{i-1})$
+
+$i=1,...,r-1$
+
+$L_r = L_{r-1} \oplus f_{k_r}(R_{r-1})$
+
+$R_r = R_{r-1}$
+
+Konkrete Realisierung hängt von f ab + Art der Rundenschlüsselerzeugung.
+
+\par \medskip
+
+Die Abbildungen $R_{i-1} \rightarrow f_{k_i}(R_{i-1})$ dürfen nicht affin-linear sein. (affin-linear: x $\mapsto xA +b$, Hintereinanderausführung affin-linearer Chiffren ist wieder affin-linear)
+
+Denn sonst ist die gesamte Feistel-Chiffre affin-linear und angreifbar ähnlich wie lineare Chiffren.
+
+\par \medskip
+
+\textbf{Entschlüsselng} einer Feistel-Chiffre = \textbf{Verschlüsselung} mit der umgekehrten Reihenfolge der Rundenschlüssel.

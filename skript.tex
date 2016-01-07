@@ -1,0 +1,37 @@
+\documentclass[a4paper, openany]{book}
+\usepackage{titlesec}
+\usepackage[utf8x]{inputenc}
+\usepackage[document]{ragged2e}
+\usepackage{enumitem}
+\usepackage{filecontents}
+\usepackage{tikz}
+\usepackage{amsmath, amssymb, amstext, amsfonts, mathrsfs}
+\usepackage{qtree}
+\renewcommand{\chaptername}{}
+\renewcommand{\contentsname}{Inhaltsverzeichnis}
+\titleformat{\chapter}
+  {\Large\bfseries} % format
+  {}                % label
+  {0pt}             % sep
+  {\huge}           % before-code
+
+\author{Steffen Lindner}
+\title{\vspace{-2cm}Codierung und Verschlüsselung}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+\chapter{Kryptologie}
+
+\foreach \c in {1,2,3,4,5,6} {\input{Kryptologie/krypto\c.tex}}
+
+
+\chapter{Codierungstheorie}
+
+\foreach \c in {1,2} {\input{Codierung/cod\c.tex}}
+
+
+  

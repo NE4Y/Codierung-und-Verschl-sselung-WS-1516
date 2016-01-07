@@ -1,0 +1,97 @@
+\chapter{Secret Sharing Schemes}
+
+  Verteilung eines Geheimnisses auf mehrere Personen (Teilgeheimnisse), so dass gewisse Teilmengen dieser Personen mit ihren Teilgeheimnissen das Geheimnis rekonstruieren können, die anderen Teilmengen nicht.
+
+  \section{Definition}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Sei T eine Menge von Teilnehmern, $\mathcal{Z} \subseteq \mathcal{P}(T)$ Menge der \underline{zulässigen Konstellationen}. (Überlicherweise fordert man Monotonie von $\mathcal{Z}$: 
+
+    \begin{center}
+      $A \subseteq C, A \in \mathcal{Z}, A \subseteq B \subseteq T \rightarrow B \in \mathcal{Z}$
+    \end{center}
+
+    )
+
+    [ T =\{1,2,3,4\}, $\mathcal{Z} = \{\{1,2\}, \{1,3,4\}, \{1,2,3\}, \{1,2,4\}, \{1,2,3,4\}\}$]
+
+    \item Sei g ein Geheimnis (i.d.R. aus einer großen Menge möglicher Geheimnisse).
+
+    In einem Secret Sharing Scheme erhalten alle Teilnehmer durch eine vertrauenswürdige Instanz (Dealer) Elemente einer Menge $\mathcal{S}$ (Teilgeheimnisse, shadows), so dass gilt:
+
+    \begin{enumerate}
+      \item[(1)] Jede zulässige Konstellation kann mit ihren Teilgeheimnissen g rekonstruieren
+      \item[(2)] Unzulässige Konstellationen können das nicht
+    \end{enumerate}
+
+    \item SSS heißt \underline{perfekt}, wenn jede unzulässige Konstellation mit ihren Teilgeheimnis genauso viel über g weiß wie ohne ihre Teilgeheimnisse.
+  \end{enumerate}
+
+  \section{Definition}
+
+  T = $\{1,...,n\}$, Sei k $\le n$. Z = $\{ U \subseteq T : |U| \ge k\}$
+
+  \par \medskip
+
+  Ein SSS zu einem solchen Z heißt \underline{(k,n) - Schwellenwertsystem} (threshold system)
+
+
+  \section{Shamirs Konstruktion eines Schwellenwertsystems}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Vorgegeben sei große Primzahl p (in jedem Fall $p \ge n+1$).
+
+    $g \in \mathbb{Z}_p = \{0,..., p-1\}$
+
+    Dealer wählt zufällig $a_1, ..., a_{k-1} \in \mathbb{Z}_p$, $a_{k-1} \neq 0$, er bildet
+
+    \begin{center}
+      $f(x) = g + a_1x + ... + a_{k-1}x^{k-1} \in \mathbb{Z}_p[x]$
+    \end{center}
+
+    ($a_1, ..., a_{k-1}, g$ hält er geheim)
+
+    \par \medskip
+
+    \par \medskip
+
+    Dealer wählt paarweise verschiedene $x_1, ..., x_n \in \mathbb{Z}_p \setminus \{0\}$ (öffentlich bekannt).
+
+    Teilnehmer i erhält als Teilgeheimnis:
+
+    \begin{center}
+      $g_i = f(x_i)$ (und $x_i$)
+    \end{center}
+
+    \item Zur Rekonstruktion von g müssen k Teilnehmer kooperieren, etwa $i_1, ..., i_k$. Durch ($x_{i_1}, g_{i_1}), ..., (x_{i_k}, g_{i_k})$ ist das Polynom $f$ eindeutig bestimmt.
+
+    Zum Beispiel mit LGS:
+
+    \begin{center}
+      $g + a_1x_{i_1} + ... + a_{k-1}x_{i_1}^{k-1} = g_{i_1}$
+
+      ...
+
+      $g + a_1x_{i_k} + ... + a_{k-1}x_{i_k}^{k-1} = g_{i_k}$
+    \end{center}
+
+    k Gleichungen mit k Unbekannten. Hat Lösung, und diese ist eindeutig ($f, f'$ vom Grad $\le k-1$, die an k Stellen den gleichen Wert haben, so hat $f - f'$ Grad $\le k-1$ und mindestens k Nullstellen $\rightarrow f - f' = 0, f = f'$)
+
+    Oder sie bestimmen $f$ durch sogenannte Interpolation (z.B. Lagrange-Interpolation).
+
+    \begin{equation}
+      f(x) = \sum_{j=1}^k \frac{(x-x_{i_1}) ... (x-x_{i_{-1}})(x-x_{i_{j+1}}) ... (x-x_{i_k})}{(x_{i_j} - x_{i_1}) ... (x_{i_j} - x_{i_{j-1}})(x_{i_j} - x_{i_{j+1}}) ... (x_{i_j} - x_{i_k})} \cdot g_{i_j}
+    \end{equation}
+
+    Direkte Bestimmung von g durch Einsetzen von x = 0:
+
+    \begin{equation}
+      g = \sum_{j=1}^k g_{i_j} \cdot \prod_{l \neq j} \frac{x_{i_l}}{x_{i_l}-x_{i_j}}
+    \end{equation}
+
+    Mehr als k Teilnehmer ezgeun dasselbe Polynom.
+
+    \item Angenommen $k' < k$ Teilnehmer wollen g rekonstruieren. Für jedes $h \in \mathbb{Z}_p$ existieren gleich viele Polynome von Grad $\le k-1$, die durch $(x_{i_1}, g_{i_1}), ..., (x_{i_k'}, g_{i_k'})$ und durch (0,$h$) gehen.
+  \end{enumerate}
+
+  $\Rightarrow$ Shamir-Verfahren ist perfekt.

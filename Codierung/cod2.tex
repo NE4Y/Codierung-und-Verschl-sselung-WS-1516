@@ -1,0 +1,160 @@
+\chapter{Blockcodes}
+
+
+  \section{Satz (10.7)}
+
+  G Erzeugermatrix eines [n,k]-Codes $\mathcal{C}$ über K, so
+
+  \begin{equation*}
+    C = \{\underbrace{u}_{1 \times k} \cdot \underbrace{G}_{k \times n} : u \in K^k \}
+  \end{equation*}
+
+  \subsection{Beweis}
+
+  $u \cdot G = (u_1, ..., u_k) \cdot \begin{pmatrix}g_1 \\ ... \\ g_k\end{pmatrix} = u_1 g_1 + ... + u_k g_k$
+
+  \par \medskip
+
+  Auf diese Weise entstehen alle Codewörter.
+
+  \section{Bemerkung}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Die Abbildung $\begin{cases}K^k \rightarrow \mathcal{C} \subseteq K^n \\ u \mapsto u \cdot G \end{cases}$ ist injektiv.
+
+    Damit: Codierungsmöglichkeit von Informationswörtern der Länge k in Codewörter der Länge n.
+
+    \item Elementare Zeilenumformung an Erzeugermatrix von $\mathcal{C}$ liefern wieder Erzeugermatrix von $\mathcal{C}$
+  \end{enumerate}
+
+  \section{Beispiel}
+
+  Hamming-Code [7,4]-Code über $\mathbb{Z}_2$ (9.12.d).
+
+  \begin{center}
+
+  $\mathcal{C} = \{(c_1, ..., c_7) \in \mathbb{Z}_2^7 : c_1 + c_4 + c_6 + c_z = 0, c_2 + c_4 + c_5 + c_7 = 0, c_3 + c_5 + c_6 + c_7 = 0 \}$
+
+  \end{center}
+
+  $c_4, ..., c_7$ frei wählbar, dann $c_1, c_2, c_3$ bestimmt.
+
+  \par \medskip
+
+  Erzeugermatrix:
+
+  \begin{center}
+    G = $\begin{pmatrix}1 & 1 & 0 & 1 & 0 & 0 & 0 \\ 0 & 1 & 1 & 0 & 1 & 0 & 0 \\ 1 & 0 & 1 & 0 & 0 & 1 & 0 \\ 1 & 1 & 1 & 0 & 0 & 0 & 1 \end{pmatrix}$
+  \end{center}
+
+  Durch elementare Zeilenumformungen andere Erzeugermatrix:
+
+  \begin{center}
+    $\tilde{G} = \begin{pmatrix}1 & 0 & 0 & 0 & 1 & 0 & 1 \\ 0 & 1 & 0 & 0 & 0 & 1 & 1 \\ 0 & 0 & 1 & 0 & 1 & 1 & 1 \\ 0 & 0 & 0 & 1 & 1 & 1 & 0 \end{pmatrix}$
+  \end{center}
+
+  Codierung von $u = (u_1, u_2, u_3, u_4)$ mit $\tilde{G}: u /cdot \tilde{G} = (\underbrace{u_1, u_2, u_3, u_4}_{\textnormal{Information}}, *,*,*)$
+
+  (Eine Erzeugermatrix von der Form ($E_n *)$ heißt in \underline{Standardform}. Nicht jeder Code besitzt erzeugermatrix in Standardform.)
+
+  \section{Satz und Definition}
+
+  Sei $\mathcal{C}$ ein [n,k]-Code über K. Dann existiert $(n-k) \times n$ - Matrix H, sodass gilt:
+
+  \begin{center}
+  Ist $y \in K^n$, so: $y \in \mathcal{C} \Leftrightarrow H \cdot y^t = \sigma$ ($\Leftrightarrow y \cdot H^t = 0$)
+  \end{center}
+
+  H heißt \underline{Kontrollmatrix} von $\mathcal{C}$. Es ist $rg(H) = n-k$.
+
+  (Dann gilt auch: $H \cdot G^t = 0$ - Nullmatrix)
+
+  \subsection{Beweis}
+
+  Sei $g_1, ..., g_k$ Basis von $\mathcal{C}$. $G = \begin{pmatrix}g_1, ..., g_k\end{pmatrix}, g_i = (g_{i_1}, ..., g_{i_n})$
+
+  \par \medskip
+
+  Betrachte homogenes LGS: $G \cdot \begin{pmatrix}x_1 \\ ... \\ x_n \end{pmatrix} = 0$, bzw. $(x_1, ..., x_n) \cdot G^t = 0$ (Zeilenvektor der Länge k)
+
+  Zeilen von G sind lin. unabhängig, d.h. $rg(G) = k$.
+
+  \par \medskip
+
+  Daher: Dimension des Lösungsraums von $G \cdot \begin{pmatrix}x_1 \\ ... \\ x_n \end{pmatrix} = 0$ ist $n-k$.
+
+  $h_1 = \begin{pmatrix}h_{11} \\ ... \\ h_{1n} \end{pmatrix}, ..., h_{n-k} = \begin{pmatrix}h_{n-k, 1} \\ ... \\ h_{n-k, n} \end{pmatrix}$ Basis des Unterraums. 
+
+  \par \medskip
+
+  $H = \begin{pmatrix}h_1^t \\ ... \\ h_{n-k}^t \end{pmatrix}$, $G \cdot h_1 = 0, ..., G \cdot h_{n-k} = 0$.
+
+  \par \medskip
+
+  Dann gilt:
+
+  \begin{itemize}
+    \item $g_j \cdot h_i = 0, \forall i,j$
+
+    \item $g_j \cdot H^t = 0, \forall j$
+
+    \item $H \cdot y^t = 0, \forall y \in \mathcal{C}$
+  \end{itemize}
+
+  (*) $\mathcal{C} \subseteq$ Lösungsraum von $H \cdot y^t = 0$
+
+  Dimension Lösungsraum von $H \cdot y^t = 0$ ist $n - rg(H) = n-(n-k) = k$.
+
+  \par \medskip
+
+  Daher gilt (*).
+
+  \section{Bemerkung}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Kontrollmatrix kann zur Fehlererkennunng verwendet werden.
+
+    \item Beweis von 10.10 $\rightarrow$ Verfahren zur Bestimmung von H aus G.
+
+    \item Geg. H. Bestimme Basis des Lösungsraums von $H \cdot y^t = 0 \rightarrow G$
+  \end{enumerate}
+
+  \section{Beispiel}
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Parity-Check-Code über $\mathbb{Z}_2$, $\mathcal{C} = \{(u_1, ..., u_n) : \sum u_i = 0$ in $\mathbb{Z}_2 \}$
+
+    Kontrollmatrix: $(1,...,1) \cdot \begin{pmatrix}u_1 \\ ... \\ u_n \end{pmatrix}= u_1 + ... + u_n = 0$
+
+    \item Hamming [7,4]-Cde aus 10.9:
+
+    \begin{equation*}
+      H = \begin{pmatrix}1 & 0 & 0 & 1 & 0 & 1 & 1 \\ 0 & 1 & 0 & 1 & 1 & 0 & 1 \\ 0 & 0 & 1 & 0 & 1 & 1 & 1 \end{pmatrix}
+    \end{equation*}
+
+    Kontrollmatrix von $\mathcal{C}$.
+
+    \item $\mathcal{C}$ Code mit Erzeugermatrix $\begin{pmatrix}1 & 0 & 0 & 1 \\ 0 & 1 & 1 & 1 \end{pmatrix}$ [4,2]-Code über $\mathbb{Z}_2$.
+
+    Gesucht: Kontrollmatrix
+
+    \par \medskip
+
+    Es muss gelten: 
+
+    \begin{align*}
+      x_1 + x_4 = 0 \\
+      x_2 + x_3 + x_4 = 0
+    \end{align*}
+
+    $x_3, x_4$ frei wählbar. Damit folgt:
+
+    \begin{center}
+      $H = \begin{pmatrix}0 & 1 & 1 & 0 \\ 1 & 1 & 0 & 1 \end{pmatrix}$ Kontrollmatrix
+    \end{center}
+
+    $\mathcal{C} = \{(y_1, ..., y_4) : y_2 + y_3 = 0, y_1 + y_2 + y_4 = 0 \}$
+  \end{enumerate}
+
+
+  \end{document}
