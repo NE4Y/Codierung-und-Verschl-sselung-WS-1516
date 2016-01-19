@@ -7,6 +7,7 @@
 \usepackage{tikz}
 \usepackage{amsmath, amssymb, amstext, amsfonts, mathrsfs}
 \usepackage{qtree}
+\setcounter{MaxMatrixCols}{20}
 \renewcommand{\chaptername}{}
 \renewcommand{\contentsname}{Inhaltsverzeichnis}
 \titleformat{\chapter}
@@ -32,6 +33,259 @@
 \chapter{Codierungstheorie}
 
 \foreach \c in {1,2} {\input{Codierung/cod\c.tex}}
+
+\section{Syndrom-Decodierung linearer Codes}
+
+$\mathcal{C}$ lin. [n,k]-Code über K, $|k| = q$, Kontrollmatrix H, (n-k) $\times$ n -Matrix. Ist $y \in K^n$, so heißt $H \cdot y^t \in K^{n-k}$ \underline{Syndrom} von $y$
+
+\begin{enumerate}[label=(\alph*)]
+	\item $x \in \mathcal{C} \Leftrightarrow H \cdot x^t = 0 \Leftrightarrow x$ hat Syndrom 0
+
+	\item $y_1, y_2$ liegen in der gleichen Nebenklassen bzgl. $\mathcal{C} \Leftrightarrow H \cdot y_1^t = H \cdot y_2^t$ (d.h. $y_1, y_2$ haben gleiches Syndrom)
+
+
+	[$y_1 \in y_2 + \mathcal{C} \Leftrightarrow y_1 - y_2 \in \mathcal{C} \Leftrightarrow H \cdot y_1^t - H \cdot y_2^t = H(y_1-y_2)^t = 0 \Leftrightarrow H \cdot y_1^t = H \cdot y_2^t$]
+
+	\item Jedes $z \in K^{n-k}$ tritt als Syndrom auf.
+
+	($rg(H) = n-k =$ Rang der lin. Abb. $\begin{cases}y^t \rightarrow H \cdot y^t \\ K^n \rightarrow K^{n-k} \end{cases}$)
+\end{enumerate}
+
+Situtation: $x \in \mathcal{C}$ wird gesendet. $y = x + f$ wird empfangen, $f$"Fehlervektor".
+
+Nach (b):
+
+\begin{center}
+	$y$ und $f$ haben das gleiche Syndrom
+\end{center}
+
+Hamming-Decodierung:
+
+$y$ gegeben. Suche $x' \in \mathcal{C}$ mit min. Hamming-Abstand zu y. Das heißt: Suche e mit min. Gewicht, so dass $y-e \in \mathcal{C}$.
+
+\par \medskip
+
+e von min. Gewicht in der Nebenklasse $y + \mathcal{C}$, d.h. $e$ von minimalem Gewicht mit $H \cdot y^t = H \cdot e^t$.
+
+\par \medskip
+
+Wähle in jeder Nebenklasse ienem Vektor e von minimalem Gewicht: \underline{Nebenklassenführer} 
+
+\par \medskip
+
+Liste der Nebenklassenführer.
+
+Ordne Syndrome.
+
+Binär: lexikografisch.
+
+$\begin{pmatrix}0 \\ ... \\ 0 \end{pmatrix} \leftrightarrow$ Nebenklasse ($\mathcal{C}$) notiere Nebenklasse f.
+
+usw.
+
+\par \medskip
+
+$y$ empfangen. Berechne $H \cdot y^t$.
+
+\par \medskip
+
+Suche Nebenklassenführer zu diesem Syndrom. Decodiere $y \rightarrow y-f \in \mathcal{C}$
+
+\par \medskip
+
+Syndrom-Decod. $2^{n-k}$ Nebenklassenführer $\in \mathbb{Z}_2^n$.
+
+Speicherbedarf: $n \cdot 2^{n-k}$ Bit
+
+\par \medskip
+
+Liste aller Codewörter: $n \cdot 2^k$ Bit Speicher
+
+\par \medskip
+
+n = 70, k = 50 $\rightarrow$ Syndrom-Decod.: $70 \cdot 2^{20}$ Bit $\approx$ 8,75 MB
+
+Liste aller Codewörter: $70 \cdot 2^{50}$ Bit $\approx$ 9 PB
+
+\chapter{Beispiele guter linearer Codes}
+
+\section{Hamming-Codes}
+
+$q$ Primzahlpotenz, $K$ Körper mit $|K| = q$.
+
+Sei $l \in \mathbb{N}, l \ge 2$ mit \[ n = \frac{g^l -1}{q-1} \in \mathbb{N} \] $k = n-l$.
+
+$(q = 2, n= 2^l -1$)
+
+\par \medskip
+
+Dann existiert perfekter [n,k]-Code über K, $d(\mathcal{C}) = 3$, \underline{Hamming-Code}.
+
+\subsection{Konstruktion}
+
+Es gilt:
+
+\[|K^l \setminus \{\sigma\}| = q^l -1 \] 
+
+Deswegen gibt es in $K^l$ genau $\frac{q^l -1}{q-1}$ 1-dim. Unterräume.
+
+\par \medskip
+
+Wähle aus jedem 1-dim. Unterraum von $K^l$ einen Vektor $\neq 0$ aus. Schreibe diese als Spaltenvektoren in eine Matrix H. H ist $l \times n$ - Matrix.
+
+\par \medskip
+
+\textbf{Klar:} $rg(H) = l$, denn $rg(H) \le l$, da H nur $l$ Zeilen enthält. $rg(H) \ge l$, da H $l$ linear unabhängige Spalten enthält.
+
+\par \medskip
+
+$\mathcal{C}$ = Code mit H als Kontrollmatrix.
+
+$\mathcal{C} = \{y \in K^n : H \cdot y^t = 0 \}$ \underline{Hamming-Code}
+
+\par \medskip
+
+$dim(\mathcal{C}) = n-l = k$, $|\mathcal{C}| = q^k$.
+
+\par \medskip
+
+Je 2 Spalten von $H$ sind linear unabhängig (denn sonst kämen sie aus demselben 1-dim. Unterraum von $K^l$). Es gibt 3 linear abhängige Spalten in $H$:
+
+\[ s_1 = \begin{pmatrix}a \\ 0 \\ 0 \\ 0 \end{pmatrix}, s_2 = \begin{pmatrix}0 \\ b \\ 0 \\ 0 \end{pmatrix}, s_3 = \begin{pmatrix}c \\ c \\ 0 \\ 0 \end{pmatrix}, a,b,c \neq 0 , \frac{c}{a} s_1 + \frac{c}{b} s_2 - s_3 = \sigma\]
+
+10.13: $d(\mathcal{C}) = 3$. 1 - Fehler-korrigierender Code (t=1)
+
+\par \medskip
+
+Perfekter Code:
+
+$K^n = \bigcup_{c \in \mathcal{C}} K_t(c)$ (disjunkt)
+
+\par \medskip
+
+Kugelpackungsschranke mit Gleichheit:
+
+\[|\mathcal{C}| \cdot (1 + n \cdot (q-1)) \overset{!}{=} q^n \]
+
+\[ q^{n-l} \cdot (1 + q^l -1) = g^n \]
+
+Damit ist Hamming-Code perfekter Code.
+
+\par \medskip
+
+Bei festem $q$ und $l$ gibt es viele Möglichkeiten für H (und damit für $\mathcal{C}$). 
+
+\begin{itemize}
+	\item Auswahl der Vektoren $\neq 0$ aus 1-dim. Unterraum von $K^l$.
+	\item Reihenfolge der Spalten in H.
+\end{itemize}
+
+Führt jeweils zu perfekten Codes mit gleichen Parametern ("äquivalent").
+
+\section{Beispiel}
+
+\begin{enumerate}[label=(\alph*)]
+	\item $q = 2, K = \mathbb{Z}_2 = \{0,1 \}, l =3, n = 2^3 -1 = 7, k = n-l = 4$.
+
+	[7,4] - Code über $\mathcal{Z}_2$.
+
+	\[ H = \begin{pmatrix}1 & 0 & 0 & 1 & 0 & 1 & 1\\ 0 & 1 & 0 & 1 & 1 & 0 & 1 \\ 0 & 0 & 1 & 0 & 1 & 1 & 1 \end{pmatrix} \]
+
+	[7,4] - Hamming-Code zu $H$ über $\mathcal{Z}_2$ = Bsp. aus 9.12.d)
+
+	\item $q = 3, l =3, n = \frac{3^3 -1}{3-1} = 13$
+
+	\[ H = \begin{pmatrix}1 & 0 & 0 & 1 & 2 & 0 & 0 & 1 & 2 & 1 & 1 & 1 & 2 \\ 0 & 1 & 0 & 1 & 1 & 1 & 2 & 0 & 0 & 1 & 1 & 2 & 1 \\ 0 & 0 & 1 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 2 & 1 & 1 \end{pmatrix} \]
+
+	$dim(\mathcal{C}) = 10, |\mathcal{C}| = 3^{10} = 59.049$
+
+	\par \medskip
+
+	Anwendung: Toto, Tippe alle Codewörter aus $\mathcal{C} \rightarrow$ mind. einmal 12 oder 13 Richtige.
+
+
+	\item $[7,4]$ - Hamming-Code über $\mathbb{Z}_2$ aus a).
+
+	Ist $y = (1110110) \in \mathcal{C}$?
+
+	\[ H \cdot y^t = \begin{pmatrix} 0 \\ 0 \\1 \end{pmatrix} \neq \begin{pmatrix}0 \\0 \\ 0 \end{pmatrix}, \text{ d.h. y $\not \in \mathcal{C}$} \]
+
+	$\mathcal{C}$ perfekt: Es gibt genau ein Codewort $x \in \mathcal{C}$ mit $d(x,y) = 1$.
+
+	Wie findet man $x$? Es geht schneller als Syndrom-Decodierung:
+
+	\par \medskip
+
+	$x$ unterscheidet sich von $y$ an einer Stelle: $y_i \neq x_i$.
+
+	\par \medskip
+
+	$y = x + (0,...,0,\underbrace{1}_{i},0,...,0)$.
+
+	Bilde $H \cdot y^t = Hx^t + H \cdot \begin{pmatrix}0 \\ ... \\ 1 \\ 0 \\ ... \\ 0 \end{pmatrix}$ = i-te Spalte von H.
+
+	\par \medskip
+
+	Prüfe an welcher Stelle i Syndrom $H \cdot y^t$ als Spalte in Kontrollmatrix auftritt. Ändere $y$ an Stelle i.
+
+	\par \medskip
+
+	In unserem Beispiel $i = 3$. $y \rightarrow x = (1100110) \in \mathcal{C}$
+\end{enumerate}
+
+\section{Decodierung von Hamming-Codes}
+
+Für $\mathbb{Z}_2$ wie in $11.2.c)$. Lässt sich auf bel. Körpern verallgemeinern.
+
+\section{Definition}
+
+K (endl.) Körper. $\left \langle , \right \rangle$, $K^n \times K^n \rightarrow K$
+
+\par \medskip
+
+$u = (x_1, ..., x_n), v = (y_1, ..., y_n) : \left \langle u,v \right \rangle = \sum_{i=1}^n x_i y_i$
+
+\section{Bemerkung}
+
+\begin{enumerate}[label=(\alph*)]
+	\item $\left \langle u, v+w \right \rangle = \left \langle u,v  \right \rangle + \left \langle u,w \right \rangle$
+
+	\item $\left \langle u, a \cdot v \right \rangle = a \cdot \left \langle u,v \right \rangle$
+
+	Analog im 1. Argument.
+
+	\item $\left \langle u, v \right \rangle = \left \langle v, u \right \rangle$
+
+	\item $\left \langle 0, v\right \rangle = \left \langle v, 0 \right \rangle = 0$
+
+	\item Ist $u \in K^n$ mit $\left \langle u, v \right \rangle = 0$ für alle $v \in K^n$, so ist $u = 0$.
+\end{enumerate}
+
+$(a)-(c): \left \langle , \right \rangle$ ist symmetrische Bilinearform.
+
+\subsection{Beweis}
+
+(e):
+
+$0 = \left \langle u, e_i \right \rangle = x_i, i=1, ..., n$ mit $u = (x_1, ..., x_n)$
+
+\par \medskip
+
+\textbf{Beachte:} Aus $\left \langle v, v \right \rangle = 0$, folgt nicht $v = 0$.
+
+\par \medskip
+
+Zum Beispiel: $\mathbb{Z}_2: \left \langle v, v \right \rangle = 0 \Leftrightarrow \sum_{i=1}^n y_i^2 = 0$
+
+\par \medskip
+
+$v = (y_1, ..., y_n) : \sum_{i=1}^n y_i = 0 \Leftrightarrow$ Anzahl der Einsen in v ist gerade ($\mathbb{Z}_2$)
+
+
+
+
+
+\end{document}
 
 
   
