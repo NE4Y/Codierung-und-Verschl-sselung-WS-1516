@@ -282,7 +282,212 @@ Zum Beispiel: $\mathbb{Z}_2: \left \langle v, v \right \rangle = 0 \Leftrightarr
 $v = (y_1, ..., y_n) : \sum_{i=1}^n y_i = 0 \Leftrightarrow$ Anzahl der Einsen in v ist gerade ($\mathbb{Z}_2$)
 
 
+\section{Definition}
 
+Sei $\mathcal{C} \subseteq K^n$ ($\mathcal{C}$ braucht kein Unterraum zu sein). Dann heißt \[ \mathcal{C}^{\perp} = \{y \in K^n : \left \langle y,x \right \rangle = 0 \text{ für alle $x \in \mathcal{C}$} \} \]
+
+der \underline{duale} (oder \underline{orthogonale}) Code zu $\mathcal{C}$.
+
+$\mathcal{C}^{\perp}$ ist Unterraum, auch wenn $\mathcal{C}$ kein Unterraum ist.
+
+\section{Satz}
+
+Sei $\mathcal{C}$ ein linearer [n,k]-Code über K. 
+
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathcal{C}^{\perp}$ ist linearer [n, n-k]-Code
+
+	\item $(\mathcal{C}^{\perp})^{\perp} = \mathcal{C}$
+
+	\item $G$ Erzeugermatrix von $\mathcal{C}$ $\Leftrightarrow G$ ist Kontrollmatrix von $\mathcal{C}^{\perp}$
+
+	$H$ Kontrollmatrix von $\mathcal{C} \Leftrightarrow H$ ist Erzeugermatrix von $\mathcal{C}^{\perp}$
+
+	\item Hat $\mathcal{C}$ Erzeugermatrix $(E_k, A)$ in Standardform, so ist \[ (-A^t, E_{n-k}) \]
+
+	eine Erzeugermatrix von $\mathcal{C}^{\perp}$.
+\end{enumerate}
+
+\subsection{Beweis}
+
+\begin{enumerate}[label=(\alph*)]
+	\item $G$ Erzeugermatrix von $\mathcal{C}$, $G = \begin{pmatrix}x_1 \\ ... \\ x_k \end{pmatrix}, x_i $ Basis von $\mathcal{C}$. Sei $y \in K^n$.
+
+	\begin{align*}
+		y \in \mathcal{C}^{\perp} & \Leftrightarrow \left \langle x,y \right \rangle = 0 \text { für alle $x \in \mathcal{C}$} \\
+								  & \Leftrightarrow \left \langle x_i, y \right \rangle = 0 \text{ für alle i=1,...,k} \\
+								  & \Leftrightarrow x_i \cdot y^t = 0 \text{ für alle i=1,...,k} \\
+								  & \Leftrightarrow G \cdot y^t = 0
+	\end{align*}
+
+	D.h. $G$ ist Kontrollmatrix von $\mathcal{C}^{\perp}$.
+
+	\[ dim(\mathcal{C}^{\perp}) = n-rg(G) = n-k \]
+
+	\item $\mathcal{C} \subseteq (\mathcal{C}^{\perp})^{\perp}$
+
+	\par \medskip
+
+	\[ dim((\mathcal{C}^{\perp})^{\perp}) \underset{(a)}{=} n-dim(\mathcal{C}^{\perp}) = n-(n-k) = k = dim(\mathcal{C}) \]
+
+	Also: $\mathcal{C} = (\mathcal{C}^{\perp})^{\perp}$
+
+	\item Aus (a): G Erzeugermatrix von $\mathcal{C} \Rightarrow$ G Kontrollmatrix von $\mathcal{C}^{\perp}$
+
+	\par \medskip
+
+	Sei G Kontrollmatrix von $\mathcal{C}^{\perp}$.
+
+	\[ G = \begin{pmatrix}x_1 \\ ... \\ x_k \end{pmatrix} \]
+
+	Dann: $G \cdot y^t = 0$ für alle $y \in \mathcal{C}^{\perp}$, d.h. $\left \langle x_i, y \right \rangle = 0, i=1, ..., k$, für alle $y \in \mathcal{C}^{\perp}$.
+
+	\par \medskip
+
+	Damit:
+
+	\[ x_1, ..., x_k \in (\mathcal{C}^{\perp})^{\perp} \underset{(b)}{=} \mathcal{C} \]
+
+	Zeilen sind lin. unabhängig, $dim(\mathcal{C}) = k \Rightarrow x_1, ..., x_k$ Basis von $\mathcal{C}$.
+
+	$\Rightarrow G$ ist Erzeugermatrix von $\mathcal{C}$.
+
+	Zweite Äquivalenz folgt aus der ersten und (b).
+
+	\item \begin{align*}
+			(-A^t, E_{n-k}) \cdot (E_k, A)^t & = (-A^t, E_{n-k}) \cdot \begin{pmatrix}E_k \\ A^t \end{pmatrix} \\
+			& = - A^t \cdot E_k + E_{n-k} \cdot A^t \\
+			& = 0
+		\end{align*}
+
+	$\Leftrightarrow (-A, E_{n-k}) \cdot x^t = 0$ für alle $x \in \mathcal{C}$.
+
+	\par \medskip
+
+	$(-A^t, E_{n-k})$ ist Kontrollmatrix von $\mathcal{C}$.
+\end{enumerate}
+
+\section{Simplex-Codes}
+
+Simplex-Codes sind die dualen Codes der Hamming-Codes. 
+
+$|K| = q$, $l \in \mathbb{N}, l \ge 2$.
+
+\par \medskip
+
+Hamming-Code $\mathcal{H}$ ist $[\underbrace{\frac{q^l -1}{q-1}}_{n}, n-l]$-Code.
+
+\par \medskip
+
+Kontrollmatrix H von $\mathcal{H}$ enhlt aus jedem 1-dim. des $K^l$ einen Vektor $\neq 0$ als Spalte.
+
+Sei $\mathcal{C} = \mathcal{H}^{\perp}$. 11.7.(c) H ist Erzeugermatrix von $\mathcal{C}$.
+
+\par \medskip
+
+$\mathcal{C}$ ist $[\frac{q^l-1}{q-1}, l]$-Code \underline{Simplex-Code}
+
+\section{Satz}
+
+Jedes Codewort $\neq 0$ im Simplex-Code $\mathcal{C}$ hat Gewicht $q^{l-1}$, d.h. der Abstand zwischen zwei verschiedenen Codewörtern ist (konstant) $q^{l-1}$.
+
+\par \medskip
+
+Insbesondere ist $d(\mathcal{C}) = q^{l-1}$. $\mathcal{C}$ ist $\frac{q^{l-1}-1}{2}$ Fehlerkorrigierend.
+
+\par \medskip
+
+Ist $q=2$: $\mathcal{C}$ ist ($2^{l-2}-1)$-Fehler korrigierend
+
+
+\subsection{Beweis}
+
+Seien $z_1, ..., z_l$ Zeilen von H.
+
+$0 \neq x = (x_1, ..., x_n \in \mathcal{C})$.
+
+\[ x = \sum_{i=1}^l a_i z_i, \ a_i \in K \]
+
+Setze $a = (a_1, ..., a_l) \in K^l$. Es ist $a \neq 0$.
+
+\par \medskip
+
+$\left \langle a \right \rangle^{\perp}$ in $K^l$. $\left \langle a \right \rangle^{\perp}$ hat Dim. $l-1$ nach 11.7.(a).
+
+\par \medskip
+
+$\left \langle a \right \rangle^{\perp}$ enhält $\frac{q^l -1}{q-1}$ 1-dim. Unterräume des $K^l$.
+
+\par \medskip
+
+$\left \langle a \right \rangle^{\perp}$ enhält $\frac{q^l -1 }{q-1}$ Spalten $h_j$ von H.
+
+\par \medskip
+
+Es gilt:
+
+\[ x_j = 0 \Leftrightarrow \sum_{i=1}^l a_i z_{ij} = 0 \Leftrightarrow \begin{pmatrix}z_{1j} \\ ... \\ z_{lj} \end{pmatrix} \leftarrow \text{ j-te Spalten in H} \in \left \langle a \right \rangle^{\perp} \]
+
+Damit sind in x genau $\frac{q^{l-1}-1}{q-1}$ Komp. $x_j = 0$. Also \[ wt(x) = n- \frac{q^{l-1}-1}{q-1} = \frac{q^l -1}{q-1} - \frac{g^{l-1}-1}{q-1} = q^{l-1} \]
+
+\section{Reed-Solomon-Codes}
+
+Sei $K$ endl. Körper, $|K| = q$. Wähle $k,n$ mit $1 \le k \le n \le q$.
+
+\[ K[x]_k = \{f \in K[x] : \text{ Grad($f$)} < k \} \] ist K-VR der Dimension $k$ (Basis: $1,x,x^2,....,x^{k-1}$).
+
+\par \medskip
+
+Wähle $\mathcal{M} = (a_1, ..., a_n), a_i \in K, a_i \neq a_j$ für $i \neq j$ (geht, da $n \le q$)
+
+\par \medskip
+
+Setze $\mathcal{C}_{\mathcal{M}} = \{f(a_1), ...., f(a_n)) : f \in K[x]_k \} \subseteq K^n$ (allgemeiner) \underline{Reed-Solomon-Code}
+
+\par \medskip
+
+$\mathcal{C}_{\mathcal{M}}$ ist sog. Auswertungscode.
+
+\section{Satz}
+
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathcal{C}_{\mathcal{M}}$ ist linearer [n,k]-Code.
+
+	\item $d(\mathcal{C}_{\mathcal{M}}) = n-k+1$
+
+	\item $G = \begin{pmatrix}1 & ... & 1 \\ a_1 & ... & a_n \\ a_1^2 & ... & a_n^2 \\ ... & ... & ... \\ a_1^{k-1} & ... & a_n^{k-1} \end{pmatrix}$ ist Erzeugermatrix von $\mathcal{C}_{\mathcal{M}}$
+\end{enumerate}
+
+\subsection{Beweis}
+
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathcal{C}_{\mathcal{M}}$ ist linear $\checkmark$
+
+	\begin{align*}
+		(f(a_1), ..., f(a_n)) + (g(a_1), ..., g(a_n)) & = (f(a_1) + g(a_1), ..., f(a_n) + g(a_n)) \\
+		& = ((f+g)(a_1) , ..., (f+g)(a_n)) \in \mathcal{C}_{\mathcal{M}}, \text{ da Grad(f+g) $<$ k}
+	\end{align*}
+
+	Analog bzgl. Mult. mit Skalaren.
+
+	\par \medskip
+
+	Abb. \[ \alpha : \begin{cases}K[x]_k \rightarrow \mathcal{C}_{\mathcal{M}} \\ f \mapsto (f(a_1), ..., f(a_n)) \end{cases} \] ist lineare Abb., surjektiv.
+
+	\par \medskip
+
+	$\alpha$ injektiv: Sei $f \in K[x]_k, f \in ker(\alpha)$, d.h. $(f(a_1), ..., f(a_n)) = (0,...,0)$
+
+	\par \medskip
+
+	Also: f hat n versch. Nullstellen $n \ge k > k-1 \ge$ Grad($f$) $\rightarrow f = 0.$
+
+	$\alpha$ bijektive lin. Abb. $\Rightarrow dim(\mathcal{C}_{\mathcal{M}}) = dim(K[x]_k) = k$.
+
+	\par \medskip
+
+	$\mathcal{C}_{\mathcal{M}}$ ist [n,k]-Code.
+\end{enumerate}
 
 
 \end{document}
