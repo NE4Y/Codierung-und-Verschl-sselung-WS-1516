@@ -487,6 +487,135 @@ $\mathcal{C}_{\mathcal{M}}$ ist sog. Auswertungscode.
 	\par \medskip
 
 	$\mathcal{C}_{\mathcal{M}}$ ist [n,k]-Code.
+
+	\item Jedes $f \in K[x]_K$, $f \neq 0$, hat höchstens $k-1$ Nullstellen in K.
+
+	In $c = (f(a_1), ..., f(a_n))$ sind höchstens $k-1$ Stellen gleich 0. D.h. $wt(c) \ge n - (k-1) = n - k + 1$ für alle $0 \neq c \in \mathcal{C}_M$
+
+	\par \medskip
+
+	\[ d(\mathcal{C}_M) = wt(\mathcal{C}_M) \ge n-k+1 \]
+
+	Setze $f = (x-a_1) \cdot ... \cdot (x-a_{k-1}) \in K[x]_k$. $c = (f(a_i), ..., f(a_n)) \in \mathcal{C}_M$ hat Nullen an den ersten $k-1$ Stellen (und sonst keine). 
+
+	\par \medskip
+
+	\[ wt(c) = n-k+1 \]
+
+	Damit folgt:
+
+	\[ d(\mathcal{C}_M) = wt(\mathcal{C}_M) = n-k+1 \]
+
+	(Folgt auch aus Singleton-Schranke)
+
+	\item $1,x,...,x^{k-1}$ bilden Basis von $K[x]_k$.		
+
+	\par \medskip
+
+	$\underset{(a)}{\Rightarrow} \underbrace{\alpha(1), \alpha(x), ..., \alpha(x^{k-1})}_{\text{Zeilen von G}}$ Basis von $\mathcal{C}_m$
+\end{enumerate}
+
+\section{Bemerkung}
+
+\begin{enumerate}[label=(\alph*)]
+	\item Für $q=2$ ist $n \le 2$, d.h. die Codes sind trivial.
+	\item Für jeden Code gilt Singleton-Schranke: $d \le n-k+1$. 
+
+	Für Reed-Solomon-Codes gilt Gleichheit: \[ MDS-Codes \] (maximum-distance-separable)
+\end{enumerate}
+
+\section{Die speziellen Reed-Solomon-Codes}
+
+$n = q-1$. Sei $\alpha$ ein Erzeugendes der mult. Gruppe $K^*$ = $K \setminus \{0\} = \{\alpha^0=1, \alpha^1 = \alpha, \alpha^2, ..., \alpha^{q-2}\}$ ($\alpha^{q-1} = 1$)
+
+\par \medskip
+
+Setze $a_i = \alpha^{i-1}$ ($\mathcal{M} = (\alpha^0 = 1, \alpha, ..., \alpha^{q-2})$)
+
+Der entsprechende Reed-Solomon-Codes heißt \[ RS_q(d) \] Mann gibt sich d vor. $n = q -1$. $k = n-d+1$
+
+Nach 11.11.c) ist \[ G = \begin{pmatrix}1 & 1 & 1 & ... & 1 \\ 1 & \alpha & \alpha^2 & ... & \alpha^{q-2} \\ 1 & \alpha^2 & \alpha^4 & ... & \alpha^{2 \cdot (q-2)} \\ ... & ... & ... & .... & ... & \\ 1 & \alpha^{k-1} & \alpha^{2 \cdot (k-1)} & ... & \alpha^{(q-2) \cdot (k-1)} \end{pmatrix} \]
+
+Erzeugermatrix von $RS_q(d)$.
+
+\subsection{Beispiel}
+
+$q = 7$., $n = 6$, $d = 4$, $k = 3$.
+
+$K = \mathbb{Z}_7 = \{0, 1, 3, 3^2 = 2, 3^3 = 6, 3^4 = 4, 3^5 = 5\}$ $(\alpha = 3)$
+
+\par \medskip
+
+$RS_7(4):$ \[ G = \begin{pmatrix}1 & 1 & 1 & 1 & 1 & 1 \\ 1 & 3 & 2 & 6 & 4 & 5 \\ 1 & 2 & 4 & 1 & 2 & 4 \end{pmatrix} \]
+
+$\underbrace{\alpha^i \cdot \underbrace{(1, \alpha^i, \alpha^{2i}, ..., \alpha^{i \cdot (q-2)})}_{\in \mathcal{C}}}_{\in \mathcal{C}} = (\alpha^i, \alpha^{2i}, ..., \alpha^{i \cdot (q-2)}, \underbrace{1}_{\alpha^i \cdot \alpha^{i \cdot (q-2)}}) \in \mathcal{C}$
+
+\par \medskip
+
+Zyklischer Shift um 1 Stelle (nach links) eines Codeworts ergibt wieder ein Codewort. Folge: Zyklischer Shit um bel. viele Stellen ergibt wieder ein Codewort.
+
+\par \medskip
+
+\[ RS_q(d) \text{ ist ein sog. \underline{zyklischer Code}} \]
+
+\subsection{Beispiel}
+
+$q = 2^8 = 256$, $n = 255$, $k = 125$, $d = 131$, 65-Fehler-korrigierend.
+
+\par \medskip
+
+$z \in (K_q)^{255}$ $\underset{\text{decod.}}{\rightarrow}$ c
+
+\par \medskip
+
+$|\mathcal{C}| = q^k = 256^{125} = 2^{1000}$
+
+\par \medskip
+
+Syndrom Decod.: $256^{130}$
+
+\par \medskip
+
+\textbf{Fazit:} Syndrom-Decodierung oder "Liste durchgehen" bieten sich nicht an.
+
+\chapter{Interleaving und Audio-CD-Codierung}
+
+CD's: Typische Fehler Auslöschungen als "Bursts"
+
+\section{Lemma}
+
+Ein linearer Code mit Minimalabstand $d$ kann bis zu $d-1$ Auslöschungen korrigieren, wenn keine weiteren Fehler aufgetreten sind. 
+
+\subsection{Beweis}
+
+$c = (c_1, ..., c_n)$ gesendet. $z = (c_1, ..., *, ..., *, ..., c_n)$ empfangen. $*$ = Auslöschungen an $a \le d-1$ Stellen.
+
+\par \medskip
+
+ist $c'$ Codewort, das an den nicht ausgelöschten Stellen mit $z$ übereinstimmt, so gilt: \[ d(c, c') \le a  \le d-1 \Rightarrow c = c' \]
+
+\section{Cross-Interleaving}
+
+Technik zur Korrektur von "Burst"-Fehlern.
+
+\begin{enumerate}[label=(\alph*)]
+	\item Geg.: $\mathcal{C}_1, \mathcal{C}_2$ $[n_i, k_i]$-Codes, $i=1,2$ über K mit Erzeugermatrizen in Standardform. \[ (E_{k_i} | \underbrace{A_i}_{n_i - k_i}) \]
+
+	Gegeben seien $k_1$ Infowörter der Länge $k_2$. \[ i_1 = (c_{11}, ..., c_{k_21}) \] \[ ... \] \[ i_{k_1} = (c_{1k_1}, ..., c_{k_2k_2}) \]
+
+	Codiere $i_1, ..., i_{k_1}$ mit dem \underline{äußeren Code} $\mathcal{C}$ durch Multiplikation von $i_j $ mit $(E_{k_2} | A_2)$. Liefert: \[c_1 = (\underbrace{i_1}_{k_2},\underbrace{*...*}_{n_2-k_2}), ..., c_{k_1} = (i_{k_1}, *...*) \in \mathcal{C}_2 \]
+
+	Schreibe $c_1, ..., c_{k-1}$ als Spalten in eine Matrix \[ \begin{pmatrix}i_1^t & i_2^t & ... & i_{k_1}^t \\ * & * & ... & * \\ ... & ... & ... & ... \\ * & * & * & * \end{pmatrix} n_2 \times k_1-Matrix \]
+
+	Codiere die Zeilen mit dem \underline{inneren Code} $\mathcal{C}_1$ durch Multiplikation mit $(E_{k_1} | A_1)$. \[ \begin{pmatrix}i_1^t & ... & i_{k_1}^t & * \\ * & ... & * & * \end{pmatrix} n_2 \times n_1-Matrix\]
+
+	Letzen $n_1-k_1$ Spalten $\in \mathcal{C_2}$, da sie Lin. Komb. der ersten $k_1$ Spalten sind. 
+
+	\par \medskip
+
+	Lese Matrix zur Übertragung / Speicherung zeilenweise aus: Wort der Länge $n_1 \cdot n_2$.
+
+	\[ w =  |\overbrace{\underset{\in \ \mathcal{C}_1}{-------}|\underset{\in \ \mathcal{C}_1}{-------}|....}^{i_1}|-------|...|\underset{\in \ \mathcal{C}_1}{-------}| \]
 \end{enumerate}
 
 
